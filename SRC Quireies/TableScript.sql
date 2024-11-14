@@ -125,6 +125,15 @@ CREATE TABLE Instructor (
     FOREIGN KEY (Instructor_ID) REFERENCES Instructor(Instructor_ID),
     FOREIGN KEY (Course_ID) REFERENCES Course(Course_ID)
 	);
+
+    CREATE TABLE learningActivity(
+    Activity_ID INT PRIMARY KEY,
+    FOREIGN KEY (Course_ID) REFERENCES Module(Course_ID),
+    FOREIGN KEY (Module_ID) REFERENCES Module(Module_ID),
+    activityType VARCHAR(50),
+    instruction_details VARCHAR(255),
+    maxScore INT
+    );
     CREATE TABLE Notification(
     Notification_ID INT PRIMARY KEY,
     time_stamp TIMESTAMP,
