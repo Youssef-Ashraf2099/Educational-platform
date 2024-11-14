@@ -134,6 +134,15 @@ CREATE TABLE Instructor (
     instruction_details VARCHAR(255),
     maxScore INT
     );
+
+    CREATE TABLE LearningPath(
+    pathID INT PRIMARY KEY,
+    FOREIGN KEY (Learner_ID) REFERENCES PersonalProfile(Learner_ID),
+    FOREIGN KEY (profileID) REFERENCES PersonalProfile(profileID),
+    completion_status VARCHAR(220),
+    customContent VARCHAR(255),
+    adaptiveRules VARCHAR(255)
+    );
     CREATE TABLE Notification(
     Notification_ID INT PRIMARY KEY,
     time_stamp TIMESTAMP,
