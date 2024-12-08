@@ -8886,23 +8886,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\ya168\\.nuget\\packages\\": {},
+    "C:\\Users\\amh24\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Giu  files\\Semester 3\\Semester 3\\data base\\Project\\Educational-platform\\Course station\\Course station\\Course station.csproj",
+      "projectUniqueName": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\Course station.csproj",
       "projectName": "Course station",
-      "projectPath": "E:\\Giu  files\\Semester 3\\Semester 3\\data base\\Project\\Educational-platform\\Course station\\Course station\\Course station.csproj",
-      "packagesPath": "C:\\Users\\ya168\\.nuget\\packages\\",
-      "outputPath": "E:\\Giu  files\\Semester 3\\Semester 3\\data base\\Project\\Educational-platform\\Course station\\Course station\\obj\\",
+      "projectPath": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\Course station.csproj",
+      "packagesPath": "C:\\Users\\amh24\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\ya168\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\amh24\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

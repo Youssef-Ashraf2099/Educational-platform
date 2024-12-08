@@ -56,14 +56,26 @@ namespace Course_station.Controllers
         public IActionResult Index()
         {
             return View();
-        }
-
+        }  
         public IActionResult Privacy()
         {
             return View();
         }
+        // course
+        public IActionResult FeaturedCourse()
+        {
+            
+            return View();
+        }
+        public IActionResult About()
+        {
+            return View();
+        }
+        public IActionResult Contact()
+        {
+            return View();
+        }
 
-        
         [HttpPost]
         public IActionResult Delete(int id)
         {
@@ -71,22 +83,25 @@ namespace Course_station.Controllers
             return RedirectToAction("Index");
         }
 
+
         public IActionResult Details(int id)
         {
             // Add your details logic here
             return View();
         }
 
-        public IActionResult Create()
-        {
-            // Add your create logic here
-            return View();
-        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
+        
+
+
+
     }
 }
