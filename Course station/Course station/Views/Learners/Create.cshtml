@@ -6,34 +6,66 @@
 
 <h1>Create Personal Profile</h1>
 
-<h4>PersonalProfile</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="PreferedContentType" class="control-label"></label>
-                <input asp-for="PreferedContentType" class="form-control" />
-                <span asp-validation-for="PreferedContentType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EmotionalState" class="control-label"></label>
-                <input asp-for="EmotionalState" class="form-control" />
-                <span asp-validation-for="EmotionalState" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PersonalityType" class="control-label"></label>
-                <input asp-for="PersonalityType" class="form-control" />
-                <span asp-validation-for="PersonalityType" class="text-danger"></span>
-            </div>
-            <input type="hidden" asp-for="LearnerId" />
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+@* <h4>PersonalProfile</h4> *@
+@* <hr /> *@
+@* <div class="row"> *@
+@*     <div class="col-md-4"> *@
+@*         <form asp-action="Create"> *@
+@*             <div asp-validation-summary="ModelOnly" class="text-danger"></div> *@
+@*             <div class="form-group"> *@
+@*                 <label asp-for="PreferedContentType" class="control-label"></label> *@
+@*                 <input asp-for="PreferedContentType" class="form-control" /> *@
+@*                 <span asp-validation-for="PreferedContentType" class="text-danger"></span> *@
+@*             </div> *@
+@*             <div class="form-group"> *@
+@*                 <label asp-for="EmotionalState" class="control-label"></label> *@
+@*                 <input asp-for="EmotionalState" class="form-control" /> *@
+@*                 <span asp-validation-for="EmotionalState" class="text-danger"></span> *@
+@*             </div> *@
+@*             <div class="form-group"> *@
+@*                 <label asp-for="PersonalityType" class="control-label"></label> *@
+@*                 <input asp-for="PersonalityType" class="form-control" /> *@
+@*                 <span asp-validation-for="PersonalityType" class="text-danger"></span> *@
+@*             </div> *@
+@*             <input type="hidden" asp-for="LearnerId" /> *@
+
+@*              <div class="form-group">   *@
+@*                <input type="submit" value="Create" class="btn btn-primary"/>  *@
+@*             </div>  *@
+            
+@*         </form> *@
+@*     </div> *@
+@* </div> *@
+
+
+<form asp-controller="PersonalProfile" asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="PreferedContentType" class="control-label"></label>
+        <input asp-for="PreferedContentType" class="form-control" />
+        <span asp-validation-for="PreferedContentType" class="text-danger"></span>
     </div>
-</div>
+
+    <div class="form-group">
+        <label asp-for="EmotionalState" class="control-label"></label>
+        <input asp-for="EmotionalState" class="form-control" />
+        <span asp-validation-for="EmotionalState" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PersonalityType" class="control-label"></label>
+        <input asp-for="PersonalityType" class="form-control" />
+        <span asp-validation-for="PersonalityType" class="text-danger"></span>
+    </div>
+
+    <input type="hidden" asp-for="LearnerId" />
+
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>
+
 
 <div>
     <a asp-action="Index">Back to List</a>

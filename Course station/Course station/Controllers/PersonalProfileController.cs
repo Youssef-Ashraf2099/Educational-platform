@@ -38,7 +38,28 @@ namespace Course_station.Controllers
             return View(personalProfile);
         }
 
-        // GET: PersonalProfile/Create/{learnerId}
+
+        //[HttpGet("PersonalProfile/Create/{learnerId}")]
+        //public IActionResult Create(int learnerId)
+        //{
+        //    var personalProfile = new PersonalProfile
+        //    {
+        //        LearnerId = learnerId
+        //    };
+        //    return View(personalProfile);
+        //}
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("PreferedContentType,EmotionalState,PersonalityType,LearnerId")] PersonalProfile personalProfile)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(personalProfile);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(personalProfile);
+        //}
         [HttpGet("PersonalProfile/Create/{learnerId}")]
         public IActionResult Create(int learnerId)
         {
@@ -49,21 +70,26 @@ namespace Course_station.Controllers
             return View(personalProfile);
         }
 
-        // POST: PersonalProfile/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PreferedContentType,EmotionalState,PersonalityType,LearnerId")] PersonalProfile personalProfile)
         {
+            if (personalProfile.LearnerId == 0)
+            {
+                ModelState.AddModelError("LearnerId", "LearnerId is required.");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(personalProfile);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+           // Console.WriteLine(personalProfile.GetType()); // Should output PersonalProfile
             return View(personalProfile);
         }
 
-       
+
 
         // GET: PersonalProfile/Delete/5
         public async Task<IActionResult> Delete(int? id)

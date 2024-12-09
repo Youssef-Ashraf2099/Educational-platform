@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Course_station.Models;
 
 public partial class PersonalProfile
 {
+   
     public int LearnerId { get; set; }
 
     public int ProfileId { get; set; }
