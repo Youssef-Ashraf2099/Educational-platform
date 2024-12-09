@@ -39,27 +39,6 @@ namespace Course_station.Controllers
         }
 
 
-        //[HttpGet("PersonalProfile/Create/{learnerId}")]
-        //public IActionResult Create(int learnerId)
-        //{
-        //    var personalProfile = new PersonalProfile
-        //    {
-        //        LearnerId = learnerId
-        //    };
-        //    return View(personalProfile);
-        //}
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("PreferedContentType,EmotionalState,PersonalityType,LearnerId")] PersonalProfile personalProfile)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(personalProfile);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(personalProfile);
-        //}
         [HttpGet("PersonalProfile/Create/{learnerId}")]
         public IActionResult Create(int learnerId)
         {

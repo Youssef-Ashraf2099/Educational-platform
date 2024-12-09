@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "SZQkAcGC7bAwGflT1jPweclQaBKnlEHMrGIqwPLzaLQ=",
+  "Hash": "nvJpeuX4Sp6nIj2lwzsNw6LmrWlMnzdSJfUNW//p68A=",
   "Source": "Course station",
   "BasePath": "_content/Course station",
   "Mode": "Default",
@@ -3734,6 +3734,27 @@
       "OriginalItemSpec": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
     },
     {
+      "Identity": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\obj\\Debug\\net9.0\\compressed\\yez5fl2ovi-lxme2xs8uc.gz",
+      "SourceId": "Course station",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\obj\\Debug\\net9.0\\compressed\\",
+      "BasePath": "_content/Course station",
+      "RelativePath": "css/layout#[.{fingerprint=lxme2xs8uc}]?.css.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\wwwroot\\css\\layout.css",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "z45stvllgw",
+      "Integrity": "A7Js3caNcu5JNwL3McvUrW5x05/0mYgy/gzdnJ4fTjA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\wwwroot\\css\\layout.css"
+    },
+    {
       "Identity": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\obj\\Debug\\net9.0\\compressed\\yfc7ypekbg-mlv21k5csn.gz",
       "SourceId": "Microsoft.AspNetCore.Identity.UI",
       "SourceType": "Package",
@@ -3963,6 +3984,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\Course station.bundle.scp.css"
+    },
+    {
+      "Identity": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\wwwroot\\css\\layout.css",
+      "SourceId": "Course station",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\wwwroot\\",
+      "BasePath": "_content/Course station",
+      "RelativePath": "css/layout#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "lxme2xs8uc",
+      "Integrity": "mZHyRjqnlQIlqMo2M3d0W0FOs2Sx9J2pae01Q6+Ivzg=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\layout.css"
     },
     {
       "Identity": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\wwwroot\\css\\site.css",
@@ -5924,6 +5966,304 @@
         {
           "Name": "integrity",
           "Value": "sha256-/HcoTRnGCDeaDwI7YhCpJ6jlWG2FTuy+HuY4bVKoctk="
+        }
+      ]
+    },
+    {
+      "Route": "css/layout.css",
+      "AssetFile": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\obj\\Debug\\net9.0\\compressed\\yez5fl2ovi-lxme2xs8uc.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.001661129568"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "601"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"A7Js3caNcu5JNwL3McvUrW5x05/0mYgy/gzdnJ4fTjA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 09 Dec 2024 15:34:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"mZHyRjqnlQIlqMo2M3d0W0FOs2Sx9J2pae01Q6+Ivzg=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-mZHyRjqnlQIlqMo2M3d0W0FOs2Sx9J2pae01Q6+Ivzg="
+        }
+      ]
+    },
+    {
+      "Route": "css/layout.css",
+      "AssetFile": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\wwwroot\\css\\layout.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1964"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mZHyRjqnlQIlqMo2M3d0W0FOs2Sx9J2pae01Q6+Ivzg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 09 Dec 2024 15:34:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-mZHyRjqnlQIlqMo2M3d0W0FOs2Sx9J2pae01Q6+Ivzg="
+        }
+      ]
+    },
+    {
+      "Route": "css/layout.css.gz",
+      "AssetFile": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\obj\\Debug\\net9.0\\compressed\\yez5fl2ovi-lxme2xs8uc.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "601"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"A7Js3caNcu5JNwL3McvUrW5x05/0mYgy/gzdnJ4fTjA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 09 Dec 2024 15:34:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-A7Js3caNcu5JNwL3McvUrW5x05/0mYgy/gzdnJ4fTjA="
+        }
+      ]
+    },
+    {
+      "Route": "css/layout.lxme2xs8uc.css",
+      "AssetFile": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\obj\\Debug\\net9.0\\compressed\\yez5fl2ovi-lxme2xs8uc.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.001661129568"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "601"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"A7Js3caNcu5JNwL3McvUrW5x05/0mYgy/gzdnJ4fTjA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 09 Dec 2024 15:34:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"mZHyRjqnlQIlqMo2M3d0W0FOs2Sx9J2pae01Q6+Ivzg=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "lxme2xs8uc"
+        },
+        {
+          "Name": "label",
+          "Value": "css/layout.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-mZHyRjqnlQIlqMo2M3d0W0FOs2Sx9J2pae01Q6+Ivzg="
+        }
+      ]
+    },
+    {
+      "Route": "css/layout.lxme2xs8uc.css",
+      "AssetFile": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\wwwroot\\css\\layout.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1964"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mZHyRjqnlQIlqMo2M3d0W0FOs2Sx9J2pae01Q6+Ivzg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 09 Dec 2024 15:34:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "lxme2xs8uc"
+        },
+        {
+          "Name": "label",
+          "Value": "css/layout.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-mZHyRjqnlQIlqMo2M3d0W0FOs2Sx9J2pae01Q6+Ivzg="
+        }
+      ]
+    },
+    {
+      "Route": "css/layout.lxme2xs8uc.css.gz",
+      "AssetFile": "C:\\Users\\amh24\\Educational-platform\\Course station\\Course station\\obj\\Debug\\net9.0\\compressed\\yez5fl2ovi-lxme2xs8uc.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "601"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"A7Js3caNcu5JNwL3McvUrW5x05/0mYgy/gzdnJ4fTjA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 09 Dec 2024 15:34:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "lxme2xs8uc"
+        },
+        {
+          "Name": "label",
+          "Value": "css/layout.css.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-A7Js3caNcu5JNwL3McvUrW5x05/0mYgy/gzdnJ4fTjA="
         }
       ]
     },

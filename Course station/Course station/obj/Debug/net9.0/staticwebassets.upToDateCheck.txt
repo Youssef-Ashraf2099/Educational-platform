@@ -54,9 +54,11 @@ C:\Users\amh24\Educational-platform\Course station\Course station\wwwroot\lib\bo
 C:\Users\amh24\Educational-platform\Course station\Course station\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
 C:\Users\amh24\Educational-platform\Course station\Course station\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
 C:\Users\amh24\Educational-platform\Course station\Course station\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+C:\Users\amh24\Educational-platform\Course station\Course station\wwwroot\css\layout.css
 C:\Users\amh24\Educational-platform\Course station\Course station\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
 C:\Users\amh24\Educational-platform\Course station\Course station\wwwroot\lib\jquery\dist\jquery.min.map
 C:\Users\amh24\Educational-platform\Course station\Course station\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+wwwroot\css\layout.css
 wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\images\1_profile.jpg

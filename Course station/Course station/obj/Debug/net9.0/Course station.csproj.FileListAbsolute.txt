@@ -784,3 +784,4 @@ C:\Users\amh24\Educational-platform\Course station\Course station\obj\Debug\net9
 C:\Users\amh24\Educational-platform\Course station\Course station\obj\Debug\net9.0\Course station.pdb
 C:\Users\amh24\Educational-platform\Course station\Course station\obj\Debug\net9.0\Course station.genruntimeconfig.cache
 C:\Users\amh24\Educational-platform\Course station\Course station\obj\Debug\net9.0\ref\Course station.dll
+C:\Users\amh24\Educational-platform\Course station\Course station\obj\Debug\net9.0\compressed\yez5fl2ovi-lxme2xs8uc.gz
