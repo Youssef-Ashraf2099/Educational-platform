@@ -154,7 +154,7 @@ namespace Course_station.Controllers
             return View(courses);
         }
 
-        
+
         // GET: Course /details/5
         public async Task<IActionResult> CourseDetails(int? id)
         {
@@ -175,7 +175,7 @@ namespace Course_station.Controllers
         }
 
 
-        
+
 
         // GET: Instructor/EditCourse/5
         public async Task<IActionResult> EditCourse(int? id)
@@ -747,6 +747,8 @@ namespace Course_station.Controllers
             }
             return View(activity);
         }
+    }
+}
         /*
         // GET: Instructor/DeleteCourse/5
         public async Task<IActionResult> DeleteCourse(int? id)
@@ -797,8 +799,8 @@ namespace Course_station.Controllers
             }
 
             return View(course);
-        }*/
-        /*
+        }
+        
         [HttpPost, ActionName("DeleteCourse")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteCourseConfirmed(int courseId)
@@ -902,4 +904,4 @@ namespace Course_station.Controllers
 
 
     }
-}
+}*/
