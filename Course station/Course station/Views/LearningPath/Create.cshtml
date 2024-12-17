@@ -1,0 +1,48 @@
+﻿@model Course_station.Models.LearningPath
+
+@{
+    ViewData["Title"] = "Create Learning Path";
+}
+
+<h1>Create Learning Path</h1>
+
+<h4>LearningPath</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div class="form-group">
+                <label asp-for="LearnerId" class="control-label"></label>
+                <input asp-for="LearnerId" class="form-control" />
+                <span asp-validation-for="LearnerId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProfileId" class="control-label"></label>
+                <input asp-for="ProfileId" class="form-control" />
+                <span asp-validation-for="ProfileId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompletionStatus" class="control-label"></label>
+                <input asp-for="CompletionStatus" class="form-control" />
+                <span asp-validation-for="CompletionStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomContent" class="control-label"></label>
+                <input asp-for="CustomContent" class="form-control" />
+                <span asp-validation-for="CustomContent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdaptiveRules" class="control-label"></label>
+                <input asp-for="AdaptiveRules" class="form-control" />
+                <span asp-validation-for="AdaptiveRules" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

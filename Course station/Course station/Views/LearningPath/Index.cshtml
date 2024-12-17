@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Course_station.Models.LearningPath>
+
+@{
+    ViewData["Title"] = "Learning Paths";
+}
+
+<h1>Learning Paths</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.First().PathId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().LearnerId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().ProfileId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().CompletionStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().CustomContent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().AdaptiveRules)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PathId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LearnerId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProfileId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompletionStatus)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomContent)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AdaptiveRules)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.PathId" class="btn btn-primary">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.PathId" class="btn btn-info">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.PathId" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,54 @@
+﻿@model Course_station.Models.LearningPath
+
+@{
+    ViewData["Title"] = "Learning Path Details";
+}
+
+<h1>Learning Path Details</h1>
+
+<div>
+    <h4>LearningPath</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PathId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PathId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LearnerId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LearnerId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ProfileId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ProfileId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CompletionStatus)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CompletionStatus)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CustomContent)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CustomContent)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AdaptiveRules)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AdaptiveRules)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.PathId" class="btn btn-primary">Edit</a> |
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
