@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "View Score";
+}
+
+<h1 class="text-center">Assessment Score</h1>
+
+<div class="view-score-container card shadow-sm p-4 mb-5 bg-white rounded">
+    <h2 class="text-primary">Your Score</h2>
+    <p class="score-display">@ViewBag.Score</p>
+    <a asp-action="Details" asp-route-id="@ViewBag.AssessmentId" class="btn btn-primary">Back to Assessment Details</a>
+</div>
+
+<style>
+    .view-score-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .text-center {
+        text-align: center !important;
+    }
+
+    .mb-5 {
+        margin-bottom: 3rem !important;
+    }
+
+    .shadow-sm {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+    }
+
+    .rounded {
+        border-radius: 0.25rem !important;
+    }
+
+    .text-primary {
+        color: #007bff !important;
+    }
+
+    .score-display {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #28a745;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            opacity: 0.8;
+        }
+</style>
+

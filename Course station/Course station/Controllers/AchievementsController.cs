@@ -2,6 +2,7 @@
 using Course_station.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Course_station.Controllers
 {
@@ -40,9 +41,11 @@ namespace Course_station.Controllers
             return View(achievement);
         }
 
+      
         // GET: Achievements/Create
         public IActionResult Create()
         {
+         
             return View();
         }
 
@@ -53,12 +56,39 @@ namespace Course_station.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(achievement);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-           }
+                // Validate LearnerId and BadgeId
+                if (!_context.Learners.Any(l => l.LearnerId == achievement.LearnerId))
+                {
+                    ModelState.AddModelError("LearnerId", "Invalid Learner.");
+                }
+                if (!_context.Badges.Any(b => b.BadgeId == achievement.BadgeId))
+                {
+                    ModelState.AddModelError("BadgeId", "Invalid Badge.");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    // Ensure DateEarned and Type are set
+                    if (achievement.DateEarned == default)
+                    {
+                        achievement.DateEarned = DateOnly.FromDateTime(DateTime.Now);
+                    }
+                    if (string.IsNullOrEmpty(achievement.Type))
+                    {
+                        achievement.Type = "DefaultType"; // Set a default type if necessary
+                    }
+
+                    _context.Add(achievement);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
+            ViewBag.Learners = new SelectList(_context.Learners, "LearnerId", "Email", achievement.LearnerId);
+            ViewBag.Badges = new SelectList(_context.Badges, "BadgeId", "Title", achievement.BadgeId);
             return View(achievement);
         }
+
 
         // GET: Achievements/Edit/5
         public async Task<IActionResult> Edit(int? id)

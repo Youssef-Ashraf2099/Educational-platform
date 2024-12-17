@@ -4,55 +4,105 @@
     ViewData["Title"] = "CreateQuest";
 }
 
-<h1>Create Quest</h1>
+<h1 class="text-center">Create Quest</h1>
 
-<form asp-action="CreateQuestWithDeadline" method="post">
-    <div class="form-group">
-        <label asp-for="Title" class="control-label"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+<div class="d-flex justify-content-center">
+    <div class="container">
+        <form asp-action="CreateQuestWithDeadline" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DifficultyLevel" class="control-label"></label>
+                <input asp-for="DifficultyLevel" class="form-control" />
+                <span asp-validation-for="DifficultyLevel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Criteria" class="control-label"></label>
+                <input asp-for="Criteria" class="form-control" />
+                <span asp-validation-for="Criteria" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Collaborative" class="control-label"></label>
+                <input asp-for="Collaborative" class="form-control" />
+                <span asp-validation-for="Collaborative" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SkillMastery" class="control-label"></label>
+                <input asp-for="SkillMastery" class="form-control" />
+                <span asp-validation-for="SkillMastery" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="Deadline" class="control-label">Deadline</label>
+                <input id="Deadline" name="Deadline" class="form-control" type="datetime-local" />
+                <span id="DeadlineValidationMessage" class="text-danger">@ViewBag.DeadlineValidationMessage</span>
+            </div>
+            <div class="form-group text-center">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label asp-for="Description" class="control-label"></label>
-        <input asp-for="Description" class="form-control" />
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="DifficultyLevel" class="control-label"></label>
-        <input asp-for="DifficultyLevel" class="form-control" />
-        <span asp-validation-for="DifficultyLevel" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Criteria" class="control-label"></label>
-        <input asp-for="Criteria" class="form-control" />
-        <span asp-validation-for="Criteria" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Collaborative" class="control-label"></label>
-        <input asp-for="Collaborative" class="form-control" />
-        <span asp-validation-for="Collaborative" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="SkillMastery" class="control-label"></label>
-        <input asp-for="SkillMastery" class="form-control" />
-        <span asp-validation-for="SkillMastery" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label for="Deadline" class="control-label">Deadline</label>
-        <input id="Deadline" name="Deadline" class="form-control" type="datetime-local" />
-        <span id="DeadlineValidationMessage" class="text-danger">@ViewBag.DeadlineValidationMessage</span>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
-    </div>
-</form>
+</div>
 
-<div>
+<div class="text-center mt-3">
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+
+<style>
+    .container {
+        max-width: 600px;
+        margin: auto;
+        border: 1px solid #ccc;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
     }
-}
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0 10px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .btn-primary {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .btn-primary:hover {
+            background-color: #45a049;
+        }
+
+    .text-danger {
+        color: red;
+    }
+
+    h1 {
+        color: #333;
+    }
+</style>
+
+

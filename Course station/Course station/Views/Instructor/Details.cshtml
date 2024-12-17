@@ -1,32 +1,4 @@
-﻿@*   @model Course_station.Models.Instructor *@
-@* @{ *@
-@*     ViewData["Title"] = "Details"; *@
-@* } *@
-
-@* <h1 class="text-center">Instructor Details</h1> *@
-
-@* <div class="instructor-details card shadow-sm p-4 mb-5 bg-white rounded"> *@
-@*     <div class="instructor-header d-flex align-items-center mb-4"> *@
-@*         <div class="instructor-info ml-3"> *@
-@*             <h2 class="text-primary">@Model.InstructorName</h2> *@
-@*             <h3 class="text-primary">ID: @Model.InstructorId</h3> *@
-@*             <p class="text-muted">@Model.Email</p> *@
-@*         </div> *@
-@*     </div> *@
-
-@*     <div class="instructor-details"> *@
-@*         <h4 class="text-secondary">Personal Information</h4> *@
-@*         <dl class="row"> *@
-@*             <dt class="col-sm-3">Latest Qualification</dt> *@
-@*             <dd class="col-sm-9">@Model.LatestQualification</dd> *@
-
-@*             <dt class="col-sm-3">Expertise Area</dt> *@
-@*             <dd class="col-sm-9">@Model.ExpertiseArea</dd> *@
-@*         </dl> *@
-@*     </div> *@
-
-@*     <div class="courses mt-4"> *@
-@*         <h4 class="text-secondary">Courses</h4> *@
+﻿
 @model Course_station.Models.Instructor
 @{
     ViewData["Title"] = "Details";
@@ -39,7 +11,8 @@
         <div class="instructor-info ml-3">
             <h2 class="text-primary">@Model.InstructorName</h2>
             <h3 class="text-primary">ID: @Model.InstructorId</h3>
-            <p class="text-muted">@Model.Email</p>
+            <p class="text-muted">Email: @Model.Email</p>
+            <p class="text-muted">pass: @Model.Password</p>
         </div>
     </div>
 

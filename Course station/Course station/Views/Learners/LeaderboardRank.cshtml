@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Course_station.Models.Ranking>
+@{
+    ViewData["Title"] = "LeaderboardRankings";
+}
+
+<h1 class="text-center">Leaderboard Rankings</h1>
+
+<div class="leaderboard-rank-container card shadow-sm p-4 mb-5 bg-white rounded">
+    @if (Model.Any())
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Learner</th>
+                    <th>Total Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ranking in Model)
+                {
+                    <tr>
+                        <td>@ranking.Rank</td>
+                        <td>@ranking.Learner.FirstName @ranking.Learner.LastName</td>
+                        <td>@ranking.TotalPoints</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No rankings found.</p>
+    }
+</div>
+
+<style>
+    .leaderboard-rank-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .text-center {
+        text-align: center !important;
+    }
+
+    .mb-5 {
+        margin-bottom: 3rem !important;
+    }
+
+    .shadow-sm {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+    }
+
+    .rounded {
+        border-radius: 0.25rem !important;
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+    }
+
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .table tbody + tbody {
+            border-top: 2px solid #dee2e6;
+        }
+</style>
+
+

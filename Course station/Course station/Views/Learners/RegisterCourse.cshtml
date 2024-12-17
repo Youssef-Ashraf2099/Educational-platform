@@ -1,0 +1,54 @@
+﻿@model Course_station.Models.EnrollViewModel
+@{
+    ViewData["Title"] = "RegisterCourse";
+}
+
+<h1 class="text-center">Register for a Course</h1>
+
+<div class="register-course-container card shadow-sm p-4 mb-5 bg-white rounded">
+    <form asp-action="RegisterCourse" method="post">
+        <div class="form-group">
+            <label asp-for="CourseId" class="control-label">Course</label>
+            <select asp-for="CourseId" class="form-control" asp-items="ViewBag.Courses"></select>
+            <span asp-validation-for="CourseId" class="text-danger"></span>
+        </div>
+        <input type="hidden" asp-for="LearnerId" />
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+</div>
+
+<style>
+    .register-course-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .text-center {
+        text-align: center !important;
+    }
+
+    .mb-5 {
+        margin-bottom: 3rem !important;
+    }
+
+    .shadow-sm {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+    }
+
+    .rounded {
+        border-radius: 0.25rem !important;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            opacity: 0.8;
+        }
+</style>

@@ -1,0 +1,65 @@
+﻿@model Course_station.Models.EmotionalFeedback
+@{
+    ViewData["Title"] = "SubmitEmotionalFeedback";
+}
+
+<h1 class="text-center">Submit Emotional Feedback</h1>
+
+<div class="submit-feedback-container card shadow-sm p-4 mb-5 bg-white rounded">
+    <form asp-action="SubmitEmotionalFeedback" method="post">
+        <div class="form-group">
+            <label asp-for="ActivityId" class="control-label">Activity ID</label>
+            <input asp-for="ActivityId" class="form-control" readonly />
+            <span asp-validation-for="ActivityId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="LearnerId" class="control-label">Learner ID</label>
+            <input asp-for="LearnerId" class="form-control" readonly />
+            <span asp-validation-for="LearnerId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="EmotionalState" class="control-label">Emotional State</label>
+            <input asp-for="EmotionalState" class="form-control" />
+            <span asp-validation-for="EmotionalState" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+    </form>
+</div>
+
+<style>
+    .submit-feedback-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .text-center {
+        text-align: center !important;
+    }
+
+    .mb-5 {
+        margin-bottom: 3rem !important;
+    }
+
+    .shadow-sm {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+    }
+
+    .rounded {
+        border-radius: 0.25rem !important;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            opacity: 0.8;
+        }
+</style>
+
+
