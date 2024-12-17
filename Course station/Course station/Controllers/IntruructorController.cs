@@ -75,18 +75,6 @@ namespace Course_station.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("InstructorId,InstructorName,LatestQualification,ExpertiseArea,Email,Password")] Instructor instructor)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(instructor);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(instructor);
-        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("InstructorId,InstructorName,LatestQualification,ExpertiseArea,Email,Password")] Instructor instructor)
@@ -150,6 +138,49 @@ namespace Course_station.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(instructor);
+        }
+
+        // GET: Instructor/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var instructor = await _context.Instructors
+                .FirstOrDefaultAsync(m => m.InstructorId == id);
+            if (instructor == null)
+            {
+                return NotFound();
+            }
+
+            return View(instructor);
+        }
+
+        // POST: Instructor/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var instructor = await _context.Instructors.FindAsync(id);
+            if (instructor == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _context.Instructors.Remove(instructor);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = "Instructor deleted successfully!";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error deleting instructor: {ex.Message}";
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Instructor/ManageCourses
@@ -266,48 +297,7 @@ namespace Course_station.Controllers
             return View("~/Views/Course/Delete.cshtml", course);
         }
 
-        // GET: Instructor/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var instructor = await _context.Instructors
-                .FirstOrDefaultAsync(m => m.InstructorId == id);
-            if (instructor == null)
-            {
-                return NotFound();
-            }
-
-            return View(instructor);
-        }
-
-        // POST: Instructor/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var instructor = await _context.Instructors.FindAsync(id);
-            if (instructor == null)
-            {
-                return NotFound();
-            }
-
-            try
-            {
-                _context.Instructors.Remove(instructor);
-                await _context.SaveChangesAsync();
-                TempData["Message"] = "Instructor deleted successfully!";
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Error deleting instructor: {ex.Message}";
-            }
-
-            return RedirectToAction(nameof(Index));
-        }
+      
         [AllowAnonymous]
         public IActionResult Login()
         {

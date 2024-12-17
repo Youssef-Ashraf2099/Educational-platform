@@ -26,17 +26,25 @@ namespace Course_station.Controllers
             _learnerService = learnerService;
             _coursePrerequisiteService = coursePrerequisiteService;
         }
-
-        // GET: Learners/Home
-        public IActionResult Home()
+    //    var instructorId = HttpContext.Session.GetInt32("InstructorId");
+    //        if (instructorId == null)
+    //        {
+    //            return RedirectToAction("Login", "Instructor");
+    //}
+    //        return View();
+    // GET: Learners/Home
+   // [Authorize]
+        public async Task<IActionResult> Home()
         {
             var learnerId = HttpContext.Session.GetInt32("LearnerId");
             if (learnerId == null)
             {
-                return RedirectToAction("Home", "Learners");
+                return RedirectToAction("Login", "Learners");
             }
+
             return View();
         }
+
 
         // GET: Learners
         [AdminPageOnly]

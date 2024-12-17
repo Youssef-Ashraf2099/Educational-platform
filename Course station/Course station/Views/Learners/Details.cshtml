@@ -1,4 +1,158 @@
-﻿@model Course_station.Models.LearnerDetailsViewModel
+﻿@* @model Course_station.Models.LearnerDetailsViewModel *@
+@* @{ *@
+@*     ViewData["Title"] = "Profile"; *@
+@* } *@
+
+@* <h1 class="text-center">Profile</h1> *@
+
+@* <div class="profile-container card shadow-sm p-4 mb-5 bg-white rounded"> *@
+@*     <div class="profile-header d-flex align-items-center mb-4"> *@
+@*         <div class="profile-info ml-3"> *@
+@*             <h2 class="text-primary">@Model.Learner.FirstName @Model.Learner.LastName</h2> *@
+@*             <h3 class="text-primary">ID: @Model.Learner.LearnerId</h3> *@
+@*             <p class="text-muted">@Model.Learner.Email</p> *@
+@*         </div> *@
+@*     </div> *@
+
+@*     <div class="profile-picture mb-4 text-center"> *@
+@*         <img src="~/images/@($"{Model.Learner.LearnerId}_profile.jpg")" alt="Profile Picture" class="img-thumbnail" style="max-width: 200px;"> *@
+@*     </div> *@
+
+@*     <div class="profile-details"> *@
+@*         <h4 class="text-secondary">Personal Information</h4> *@
+@*         <dl class="row"> *@
+@*             <dt class="col-sm-3">Birthday</dt> *@
+@*             <dd class="col-sm-9">@Html.DisplayFor(model => model.Learner.Birthday)</dd> *@
+
+@*             <dt class="col-sm-3">Gender</dt> *@
+@*             <dd class="col-sm-9">@Html.DisplayFor(model => model.Learner.Gender)</dd> *@
+
+@*             <dt class="col-sm-3">Country</dt> *@
+@*             <dd class="col-sm-9">@Html.DisplayFor(model => model.Learner.Country)</dd> *@
+
+@*             <dt class="col-sm-3">Cultural Background</dt> *@
+@*             <dd class="col-sm-9">@Html.DisplayFor(model => model.Learner.CulturalBackground)</dd> *@
+@*         </dl> *@
+@*     </div> *@
+
+@*     <div class="profile-actions mt-4"> *@
+@*         <a asp-action="Edit" asp-route-id="@Model.Learner.LearnerId" class="btn btn-primary mr-2">Edit Profile</a> *@
+@*         <a asp-action="Enroll" asp-route-learnerId="@Model.Learner.LearnerId" class="btn btn-success">Enroll in a Course</a> *@
+@*         <p> *@
+@*             <a asp-action="QuestProgress" asp-route-learnerId="@Model.Learner.LearnerId">View Quest Progress</a> | *@
+@*             <a asp-action="AchievementProgress" asp-route-learnerId="@Model.Learner.LearnerId">View Achievement Progress</a> *@
+@*         </p> *@
+@*     </div> *@
+
+@*     <div class="upload-picture mt-4"> *@
+@*         <form asp-action="UploadProfilePicture" method="post" enctype="multipart/form-data"> *@
+@*             <div class="form-group"> *@
+@*                 <label for="profilePicture">Upload Profile Picture</label> *@
+@*                 <input type="file" class="form-control-file" id="profilePicture" name="profilePicture"> *@
+@*             </div> *@
+@*             <input type="hidden" name="learnerId" value="@Model.Learner.LearnerId" /> *@
+@*             <button type="submit" class="btn btn-success">Upload</button> *@
+@*         </form> *@
+@*     </div> *@
+
+@*     <div class="personal-profile mt-4"> *@
+@*         <h4 class="text-secondary">Personal Profile</h4> *@
+@*         @if (Model.PersonalProfile != null) *@
+@*         { *@
+@*             <dl class="row"> *@
+@*                 <dt class="col-sm-3">Preferred Content Type</dt> *@
+@*                 <dd class="col-sm-9">@Model.PersonalProfile.PreferedContentType</dd> *@
+
+@*                 <dt class="col-sm-3">Emotional State</dt> *@
+@*                 <dd class="col-sm-9">@Model.PersonalProfile.EmotionalState</dd> *@
+
+@*                 <dt class="col-sm-3">Personality Type</dt> *@
+@*                 <dd class="col-sm-9">@Model.PersonalProfile.PersonalityType</dd> *@
+@*             </dl> *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             <p>No personal profile found.</p> *@
+@*             <a href="/personalprofile/create/@Model.Learner.LearnerId" class="btn btn-primary">Create Personal Profile</a> *@
+@*         } *@
+@*     </div> *@
+
+@*     <div class="enrolled-courses mt-4"> *@
+@*         <h4 class="text-secondary">Enrolled Courses</h4> *@
+@*         <ul> *@
+@*             @foreach (var course in Model.EnrolledCourses) *@
+@*             { *@
+@*                 <li> *@
+@*                     <a asp-controller="Course" asp-action="Details" asp-route-id="@course.CourseId">@course.Title</a> *@
+@*                 </li> *@
+@*             } *@
+@*         </ul> *@
+@*     </div> *@
+
+@*     <div class="taken-assessments mt-4"> *@
+@*         <h4 class="text-secondary">Taken Assessments</h4> *@
+@*         <ul> *@
+@*             @foreach (var assessment in Model.TakenAssessments) *@
+@*             { *@
+@*                 <li> *@
+@*                     @assessment.Assessment.Title - @assessment.Assessment.Description *@
+@*                     <a asp-controller="Assessments" asp-action="Take" asp-route-id="@assessment.AssessmentId" class="btn btn-primary btn-sm ml-2">Take Assessment</a> *@
+@*                 </li> *@
+@*             } *@
+@*         </ul> *@
+@*     </div> *@
+
+@*     <div class="learning-paths mt-4"> *@
+@*         <h4 class="text-secondary">Learning Paths</h4> *@
+@*         <ul> *@
+@*             @foreach (var path in Model.LearningPaths) *@
+@*             { *@
+@*                 <li>@path.PathId</li> *@
+@*             } *@
+@*         </ul> *@
+@*     </div> *@
+
+@*     <div class="health-conditions mt-4"> *@
+@*         <h4 class="text-secondary">Health Conditions</h4> *@
+@*         <ul> *@
+@*             @foreach (var condition in Model.HealthConditions) *@
+@*             { *@
+@*                 <li>@condition.Condition</li> *@
+@*             } *@
+@*         </ul> *@
+@*     </div> *@
+
+@*     <div class="rankings mt-4"> *@
+@*         <h4 class="text-secondary">Rankings</h4> *@
+@*         <ul> *@
+@*             @foreach (var ranking in Model.Rankings) *@
+@*             { *@
+@*                 <li>@ranking.Rank</li> *@
+@*             } *@
+@*         </ul> *@
+@*     </div> *@
+
+@*     <div class="modules mt-4"> *@
+@*         <h4 class="text-secondary">Modules</h4> *@
+@*         <ul> *@
+@*             @foreach (var module in Model.Modules) *@
+@*             { *@
+@*                 <li>@module.Title</li> *@
+@*             } *@
+@*         </ul> *@
+@*     </div> *@
+
+@*     <div class="course-prerequisites mt-4"> *@
+@*         <h4 class="text-secondary">Course Prerequisites</h4> *@
+@*         <ul> *@
+@*             @foreach (var prerequisite in Model.CoursePrerequisites) *@
+@*             { *@
+@*                 <li>@prerequisite.Prerequisite</li> *@
+@*             } *@
+@*         </ul> *@
+@*     </div> *@
+@* </div> *@
+@model Course_station.Models.LearnerDetailsViewModel
 @{
     ViewData["Title"] = "Profile";
 }
@@ -151,7 +305,12 @@
             }
         </ul>
     </div>
+
+    <div class="mt-4">
+        <a asp-action="Home" class="btn btn-primary">Go to Home</a>
+    </div>
 </div>
+
 
 <style>
     .profile-container {
