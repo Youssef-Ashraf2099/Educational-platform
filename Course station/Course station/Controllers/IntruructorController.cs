@@ -75,6 +75,18 @@ namespace Course_station.Controllers
             return View();
         }
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("InstructorId,InstructorName,LatestQualification,ExpertiseArea,Email,Password")] Instructor instructor)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(instructor);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(instructor);
+        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("InstructorId,InstructorName,LatestQualification,ExpertiseArea,Email,Password")] Instructor instructor)
@@ -83,10 +95,12 @@ namespace Course_station.Controllers
             {
                 _context.Add(instructor);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { id = instructor.InstructorId });
             }
             return View(instructor);
         }
+
+
 
         // GET: Instructor/Edit/5
         public async Task<IActionResult> Edit(int? id)

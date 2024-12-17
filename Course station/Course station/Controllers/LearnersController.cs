@@ -33,7 +33,7 @@ namespace Course_station.Controllers
             var learnerId = HttpContext.Session.GetInt32("LearnerId");
             if (learnerId == null)
             {
-                return RedirectToAction("Login", "Learners");
+                return RedirectToAction("Home", "Learners");
             }
             return View();
         }
@@ -118,7 +118,8 @@ namespace Course_station.Controllers
             {
                 _context.Add(learner);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                //   return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Learners", new { id = learner.LearnerId });
             }
             return View(learner);
         }

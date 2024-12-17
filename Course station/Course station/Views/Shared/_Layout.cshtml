@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/Course_station.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Home.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Learners.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/css/Dashboard.css" asp-append-version="true" /> *@
     
 </head>
 <body class="@(ViewData["IsDarkTheme"] != null && (bool)ViewData["IsDarkTheme"] ? "dark-theme" : "")">
@@ -54,33 +55,33 @@
                             <a class="nav-link text-dark" href="/Home/Index#Planes"> Planes </a>
                         </li>
                         <!-- Notifications link in the navbar -->
-                        <li class="nav-item">
-                            @if (User?.IsInRole("Instructor") == true)
-                            {
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Notifications" asp-action="Create">
-                                    Notifications
-                                </a>
-                            }
-                            else if (User?.IsInRole("admin") == true)
-                            {
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Notifications" asp-action="Index">
-                                    Notifications
-                                </a>
-                            }
-                            else if (User?.IsInRole("Learner") == true)
-                            {
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Notifications" asp-action="Index">
-                                    Notifications
-                                </a>
-                            }
-                            else
-                            {
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Notifications" asp-action="NotUser">
-                                    Notifications
-                                </a>
-                            }
+                        @* <li class="nav-item"> *@
+                        @*     @if (User?.IsInRole("Instructor") == true) *@
+                        @*     { *@
+                        @*         <a class="nav-link text-dark" asp-area="" asp-controller="Notifications" asp-action="Create"> *@
+                        @*             Notifications *@
+                        @*         </a> *@
+                        @*     } *@
+                        @*     else if (User?.IsInRole("admin") == true) *@
+                        @*     { *@
+                        @*         <a class="nav-link text-dark" asp-area="" asp-controller="Notifications" asp-action="Index"> *@
+                        @*             Notifications *@
+                        @*         </a> *@
+                        @*     } *@
+                        @*     else if (User?.IsInRole("Learner") == true) *@
+                        @*     { *@
+                        @*         <a class="nav-link text-dark" asp-area="" asp-controller="Notifications" asp-action="Index"> *@
+                        @*             Notifications *@
+                        @*         </a> *@
+                        @*     } *@
+                        @*     else *@
+                        @*     { *@
+                        @*         <a class="nav-link text-dark" asp-area="" asp-controller="Notifications" asp-action="NotUser"> *@
+                        @*             Notifications *@
+                        @*         </a> *@
+                        @*     } *@
                            
-                        </li>
+                        @* </li> *@
                     </ul>
                     <ul class="navbar-nav">
                          @if (User?.Identity?.IsAuthenticated == true) 
