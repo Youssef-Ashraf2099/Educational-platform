@@ -21,4 +21,4 @@ jobs:
     - name: Build
       run: dotnet build "Course station/Course station.sln"
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test "Course station/Course station.sln"
