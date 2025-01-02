@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
         @ViewData["IsDarkTheme"] = true;
         }
     }
+   
 
     toggleSwitch.addEventListener('change', function (e) {
         if (e.target.checked) {

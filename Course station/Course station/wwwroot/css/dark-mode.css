@@ -22,3 +22,17 @@ a.dark-theme {
     border-color: #bb86fc;
     color: #121212;
 }
+.btn-primary {
+    background-color: #bb86fc;
+    border-color: #bb86fc;
+    color: #121212;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #9a67ea;
+        border-color: #9a67ea;
+    }

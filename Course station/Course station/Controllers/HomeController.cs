@@ -16,6 +16,12 @@ namespace Course_station.Controllers
         {
             _logger = logger;
         }
+       
+            public IActionResult Credits()
+            {
+                return View();
+            }
+        
 
         // GET: AdminLogin
         public IActionResult AdminLogin(string returnUrl = null)
