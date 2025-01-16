@@ -3,34 +3,45 @@ using System.Text;
 using System.Threading.Tasks;
 using Course_station.Models;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 public class ChatbotService
 {
     private readonly HttpClient _httpClient;
     private readonly ApplicationDbContext _dbContext;
+    private readonly ILogger<ChatbotService> _logger;
 
-    public ChatbotService(HttpClient httpClient, ApplicationDbContext dbContext)
+    public ChatbotService(HttpClient httpClient, ApplicationDbContext dbContext, ILogger<ChatbotService> logger)
     {
         _httpClient = httpClient;
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public async Task<string> GetChatbotResponse(string userInput)
     {
-        var requestBody = new
+        try
         {
-            prompt = userInput,
-            max_tokens = 150
-        };
+            var requestBody = new
+            {
+                prompt = userInput,
+                max_tokens = 150
+            };
 
-        var content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsync("http://172.17.176.202:5000/api/chatbot", content); // Flask server endpoint
-        response.EnsureSuccessStatusCode();
+            var content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("http://172.17.176.202:5000/api/chatbot", content); // Flask server endpoint
+            response.EnsureSuccessStatusCode();
 
-        var responseBody = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<dynamic>(responseBody);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<dynamic>(responseBody);
 
-        return result.choices[0].text;
+            return result.choices[0].text;
+        }
+        catch (HttpRequestException e)
+        {
+            _logger.LogError($"Request error: {e.Message}");
+            throw;
+        }
     }
 
     public List<Course> RecommendCourses(string userInput)
