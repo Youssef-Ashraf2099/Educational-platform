@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddHttpClient<ChatbotService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -28,6 +29,12 @@ builder.Services.AddRazorComponents();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
+
+// Register SimpleLanguageModel
+builder.Services.AddScoped<SimpleLanguageModel>();
+
+// Register ChatbotService
+builder.Services.AddScoped<ChatbotService>();
 
 builder.Services.AddScoped<LearnerService>();
 builder.Services.AddScoped<CoursePrerequisiteService>();
