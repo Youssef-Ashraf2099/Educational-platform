@@ -38,13 +38,24 @@ public class ChatbotService
         "what instructors do you have"
     };
 
+        // Convert input to lowercase for case-insensitive matching
+        var lowerInput = userInput.ToLower();
+
+        // Use prefix matching for early predictions
         var suggestions = commonQuestions
-            .Where(q => LevenshteinDistance(userInput.ToLower(), q.ToLower()) <= 5)
+            .Where(q => q.StartsWith(lowerInput))
             .ToList();
+
+        // If prefix matching doesn't yield enough results, use substring matching
+        if (suggestions.Count < 3) // Adjust the threshold as needed
+        {
+            suggestions = commonQuestions
+                .Where(q => q.Contains(lowerInput))
+                .ToList();
+        }
 
         return suggestions;
     }
-
     public string GetResponse(string userInput)
     {
         try
