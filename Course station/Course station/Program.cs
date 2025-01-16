@@ -30,6 +30,12 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 
+// Register SimpleLanguageModel
+builder.Services.AddScoped<SimpleLanguageModel>();
+
+// Register ChatbotService
+builder.Services.AddScoped<ChatbotService>();
+
 builder.Services.AddScoped<LearnerService>();
 builder.Services.AddScoped<CoursePrerequisiteService>();
 

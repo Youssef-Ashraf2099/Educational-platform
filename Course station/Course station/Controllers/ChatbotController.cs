@@ -1,35 +1,36 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 [ApiController]
 [Route("api/[controller]")]
 public class ChatbotController : ControllerBase
 {
     private readonly ChatbotService _chatbotService;
+    private readonly ILogger<ChatbotController> _logger;
 
-    public ChatbotController(ChatbotService chatbotService)
+    public ChatbotController(ChatbotService chatbotService, ILogger<ChatbotController> logger)
     {
         _chatbotService = chatbotService;
+        _logger = logger;
     }
 
     [HttpPost("chat")]
-    public async Task<IActionResult> Chat([FromBody] string userInput)
+    public IActionResult Chat([FromBody] string userInput)
     {
-        var response = await _chatbotService.GetChatbotResponse(userInput);
-        return Ok(response);
-    }
+        try
+        {
+            if (string.IsNullOrEmpty(userInput))
+            {
+                return BadRequest("User input cannot be empty.");
+            }
 
-    [HttpGet("recommend-courses")]
-    public IActionResult RecommendCourses([FromQuery] string userInput)
-    {
-        var courses = _chatbotService.RecommendCourses(userInput);
-        return Ok(courses);
-    }
-
-    [HttpGet("recommend-instructors")]
-    public IActionResult RecommendInstructors([FromQuery] string userInput)
-    {
-        var instructors = _chatbotService.RecommendInstructors(userInput);
-        return Ok(instructors);
+            var response = _chatbotService.GetResponse(userInput);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error in ChatbotController: {ex.Message}");
+            return StatusCode(500, "An error occurred while processing your request.");
+        }
     }
 }

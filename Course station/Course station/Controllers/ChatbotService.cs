@@ -1,58 +1,60 @@
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Course_station.Models;
-using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 
 public class ChatbotService
 {
-    private readonly HttpClient _httpClient;
-    private readonly ApplicationDbContext _dbContext;
+    private readonly SimpleLanguageModel _languageModel;
     private readonly ILogger<ChatbotService> _logger;
 
-    public ChatbotService(HttpClient httpClient, ApplicationDbContext dbContext, ILogger<ChatbotService> logger)
+    public ChatbotService(SimpleLanguageModel languageModel, ILogger<ChatbotService> logger)
     {
-        _httpClient = httpClient;
-        _dbContext = dbContext;
+        _languageModel = languageModel;
         _logger = logger;
     }
 
-    public async Task<string> GetChatbotResponse(string userInput)
+    public string GetResponse(string userInput)
     {
         try
         {
-            var requestBody = new
+            // Get course suggestions based on user input
+            var courseSuggestions = _languageModel.SuggestCourses(userInput);
+            var instructorSuggestions = _languageModel.SuggestInstructors(userInput);
+
+            // Generate a response based on the suggestions
+            string response = "";
+
+            if (courseSuggestions.Any())
             {
-                prompt = userInput,
-                max_tokens = 150
-            };
+                response += "Here are some courses you might be interested in:\n";
+                foreach (var course in courseSuggestions)
+                {
+                    response += $"- {course.Title}\n";
+                }
+            }
 
-            var content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("http://172.17.176.202:5000/api/chatbot", content); // Flask server endpoint
-            response.EnsureSuccessStatusCode();
+            if (instructorSuggestions.Any())
+            {
+                response += "\nHere are some instructors you might want to check out:\n";
+                foreach (var instructor in instructorSuggestions)
+                {
+                    response += $"- {instructor.InstructorName}\n";
+                }
+            }
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<dynamic>(responseBody);
+            if (string.IsNullOrEmpty(response))
+            {
+                response = "I couldn't find any courses or instructors matching your query. Please try again with different keywords.";
+            }
 
-            return result.choices[0].text;
+            return response;
         }
-        catch (HttpRequestException e)
+        catch (Exception ex)
         {
-            _logger.LogError($"Request error: {e.Message}");
-            throw;
+            _logger.LogError($"Error generating chatbot response: {ex.Message}");
+            return "An error occurred while processing your request. Please try again later.";
         }
-    }
-
-    public List<Course> RecommendCourses(string userInput)
-    {
-        // Implement logic to recommend courses based on user input
-        return _dbContext.Courses.ToList();
-    }
-
-    public List<Instructor> RecommendInstructors(string userInput)
-    {
-        // Implement logic to recommend instructors based on user input
-        return _dbContext.Instructors.ToList();
     }
 }

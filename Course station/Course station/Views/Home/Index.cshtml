@@ -36,7 +36,7 @@
 
 @section Scripts {
     <script>
-        document.getElementById('sendButton').addEventListener('click', async function () {
+                document.getElementById('sendButton').addEventListener('click', async function () {
             const userInput = document.getElementById('userInput').value;
             const response = await fetch('/api/chatbot/chat', {
                 method: 'POST',
@@ -114,6 +114,7 @@
         border-radius: 10px;
     }
 </style>
+
 <!-- About Us -->
 <h1 id="AboutUs">About Us</h1>
 <p class="Aboutus">

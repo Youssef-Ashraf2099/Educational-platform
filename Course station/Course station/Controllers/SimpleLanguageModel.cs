@@ -1,51 +1,55 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Course_station.Models;
+using Microsoft.Extensions.Logging;
 
 public class SimpleLanguageModel
 {
-    private Dictionary<string, List<string>> _wordDictionary;
+    private readonly ApplicationDbContext _dbContext;
+    private readonly ILogger<SimpleLanguageModel> _logger;
 
-    public SimpleLanguageModel()
+    public SimpleLanguageModel(ApplicationDbContext dbContext, ILogger<SimpleLanguageModel> logger)
     {
-        _wordDictionary = new Dictionary<string, List<string>>();
+        _dbContext = dbContext;
+        _logger = logger;
     }
 
-    public void Train(string text)
+    public List<Course> SuggestCourses(string userInput)
     {
-        var words = text.Split(new[] { ' ', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-        for (int i = 0; i < words.Length - 1; i++)
+        try
         {
-            var word = words[i].ToLower();
-            var nextWord = words[i + 1].ToLower();
+            // Simple keyword-based matching for course suggestions
+            var keywords = userInput.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var courses = _dbContext.Courses
+                .Where(course => keywords.Any(keyword => course.Title != null && course.Title.Contains(keyword, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
 
-            if (!_wordDictionary.ContainsKey(word))
-            {
-                _wordDictionary[word] = new List<string>();
-            }
-
-            _wordDictionary[word].Add(nextWord);
+            return courses ?? new List<Course>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error suggesting courses: {ex.Message}");
+            return new List<Course>();
         }
     }
 
-    public string GenerateText(string seed, int length)
+    public List<Instructor> SuggestInstructors(string userInput)
     {
-        var random = new Random();
-        var currentWord = seed.ToLower();
-        var result = new List<string> { currentWord };
-
-        for (int i = 0; i < length - 1; i++)
+        try
         {
-            if (!_wordDictionary.ContainsKey(currentWord) || _wordDictionary[currentWord].Count == 0)
-            {
-                break;
-            }
+            // Simple keyword-based matching for instructor suggestions
+            var keywords = userInput.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var instructors = _dbContext.Instructors
+                .Where(instructor => keywords.Any(keyword => instructor.InstructorName != null && instructor.InstructorName.Contains(keyword, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
 
-            var nextWords = _wordDictionary[currentWord];
-            currentWord = nextWords[random.Next(nextWords.Count)];
-            result.Add(currentWord);
+            return instructors ?? new List<Instructor>();
         }
-
-        return string.Join(" ", result);
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error suggesting instructors: {ex.Message}");
+            return new List<Instructor>();
+        }
     }
 }
