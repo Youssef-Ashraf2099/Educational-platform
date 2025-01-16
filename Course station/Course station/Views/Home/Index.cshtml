@@ -23,12 +23,14 @@
 
 <!-- Chatbot Section -->
 <h1 id="Chatbot">Chat with our AI</h1>
-<div>
-    <input id="userInput" placeholder="Type your message..." />
-    <button id="sendButton">Send</button>
-</div>
-<div>
-    <p id="chatbotResponse"></p>
+<div class="chat-container">
+    <div class="chat-box">
+        <div id="chat-messages" class="chat-messages"></div>
+        <div class="chat-input">
+            <input id="userInput" placeholder="Type your message..." />
+            <button id="sendButton" class="btn btn-primary">Send</button>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
@@ -43,10 +45,74 @@
                 body: JSON.stringify(userInput)
             });
             const data = await response.text();
-            document.getElementById('chatbotResponse').innerText = data;
+            const chatMessages = document.getElementById('chat-messages');
+            const userMessage = document.createElement('div');
+            userMessage.className = 'user-message';
+            userMessage.innerText = userInput;
+            chatMessages.appendChild(userMessage);
+            const botMessage = document.createElement('div');
+            botMessage.className = 'bot-message';
+            botMessage.innerText = data;
+            chatMessages.appendChild(botMessage);
+            document.getElementById('userInput').value = '';
         });
     </script>
 }
+
+<style>
+    .chat-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .chat-box {
+        width: 100%;
+        max-width: 600px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+
+    .chat-messages {
+        max-height: 300px;
+        overflow-y: auto;
+        margin-bottom: 10px;
+    }
+
+    .chat-input {
+        display: flex;
+    }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .chat-input button {
+            padding: 10px 20px;
+        }
+
+    .user-message {
+        text-align: right;
+        margin: 5px 0;
+        padding: 10px;
+        background-color: #d1e7dd;
+        border-radius: 10px;
+    }
+
+    .bot-message {
+        text-align: left;
+        margin: 5px 0;
+        padding: 10px;
+        background-color: #f8d7da;
+        border-radius: 10px;
+    }
+</style>
 
 <!-- About Us -->
 <h1 id="AboutUs">About Us</h1>
