@@ -1,3 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Course_station.Models;
+using Microsoft.Extensions.Logging;
+//using FuzzySharp;
+using System.Diagnostics;
+
 public class ChatbotService
 {
     private readonly SimpleLanguageModel _languageModel;
@@ -21,13 +29,14 @@ public class ChatbotService
                 return "Hello! How can I assist you today?";
             }
 
-            // Handle common questions
-            if (IsCommonQuestion(lowerInput))
+            // Handle common questions with fuzzy matching
+            var matchedQuestion = FuzzyMatchCommonQuestion(lowerInput);
+            if (!string.IsNullOrEmpty(matchedQuestion))
             {
-                return HandleCommonQuestion(lowerInput);
+                return HandleCommonQuestion(matchedQuestion);
             }
 
-            // Get course and instructor suggestions
+            // Get course and instructor suggestions with fuzzy matching
             var courseSuggestions = _languageModel.SuggestCourses(userInput);
             var instructorSuggestions = _languageModel.SuggestInstructors(userInput);
 
@@ -58,7 +67,7 @@ public class ChatbotService
             }
 
             // Fallback for unrecognized input
-            if (!courseSuggestions.Any() && !instructorSuggestions.Any() && !IsGreeting(lowerInput) && !IsCommonQuestion(lowerInput))
+            if (!courseSuggestions.Any() && !instructorSuggestions.Any() && !IsGreeting(lowerInput) && string.IsNullOrEmpty(matchedQuestion))
             {
                 response = "I'm here to help you find courses and instructors. Try asking something like, 'Can you recommend a course on machine learning?'";
             }
@@ -78,26 +87,45 @@ public class ChatbotService
         return greetings.Any(greeting => input.Contains(greeting));
     }
 
-    private bool IsCommonQuestion(string input)
+    private string FuzzyMatchCommonQuestion(string input)
     {
         var commonQuestions = new List<string>
-        {
-            "what courses do you offer",
-            "what courses do you suggest",
-            "what courses do you recommend",
-            "what courses can i take",
-            "who are the instructors",
-            "can you suggest instructors",
-            "can you recommend instructors",
-            "tell me about the instructors",
-            "what instructors do you have"
-        };
-        return commonQuestions.Any(question => input.Contains(question));
-    }
-
-    private string HandleCommonQuestion(string input)
     {
-        if (input.Contains("course"))
+        "what courses do you offer",
+        "what courses do you suggest",
+        "what courses do you recommend",
+        "what courses can i take",
+        "who are the instructors",
+        "can you suggest instructors",
+        "can you recommend instructors",
+        "tell me about the instructors",
+        "what instructors do you have"
+    };
+
+        string bestMatch = null;
+        int bestScore = int.MaxValue;
+
+        foreach (var question in commonQuestions)
+        {
+            int distance = LevenshteinDistance(input, question);
+            if (distance < bestScore)
+            {
+                bestScore = distance;
+                bestMatch = question;
+            }
+        }
+
+        // If the best score is below a threshold, return the matched question
+        if (bestScore <= 5) // Adjust the threshold as needed
+        {
+            return bestMatch;
+        }
+
+        return null;
+    }
+    private string HandleCommonQuestion(string matchedQuestion)
+    {
+        if (matchedQuestion.Contains("course"))
         {
             // Handle course-related questions
             var courseSuggestions = _languageModel.SuggestCourses(""); // Empty input to get all courses
@@ -116,7 +144,7 @@ public class ChatbotService
                 return "We currently don't have any courses available. Please check back later!";
             }
         }
-        else if (input.Contains("instructor"))
+        else if (matchedQuestion.Contains("instructor"))
         {
             // Handle instructor-related questions
             var instructorSuggestions = _languageModel.SuggestInstructors(""); // Empty input to get all instructors
@@ -139,4 +167,32 @@ public class ChatbotService
         // Default response for unrecognized common questions
         return "I'm here to help you find courses and instructors. Try asking something like, 'Can you recommend a course on machine learning?'";
     }
+
+    private int LevenshteinDistance(string s, string t)
+    {
+        int n = s.Length;
+        int m = t.Length;
+        int[,] d = new int[n + 1, m + 1];
+
+        if (n == 0) return m;
+        if (m == 0) return n;
+
+        for (int i = 0; i <= n; d[i, 0] = i++) { }
+        for (int j = 0; j <= m; d[0, j] = j++) { }
+
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= m; j++)
+            {
+                int cost = (t[j - 1] == s[i - 1]) ? 0 : 1;
+                d[i, j] = Math.Min(
+                    Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
+                    d[i - 1, j - 1] + cost);
+            }
+        }
+
+        return d[n, m];
+    }
+
+
 }
