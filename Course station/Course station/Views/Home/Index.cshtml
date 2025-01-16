@@ -21,6 +21,33 @@
     </div>
 </div>
 
+<!-- Chatbot Section -->
+<h1 id="Chatbot">Chat with our AI</h1>
+<div>
+    <input id="userInput" placeholder="Type your message..." />
+    <button id="sendButton">Send</button>
+</div>
+<div>
+    <p id="chatbotResponse"></p>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('sendButton').addEventListener('click', async function () {
+            const userInput = document.getElementById('userInput').value;
+            const response = await fetch('/api/chatbot/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userInput)
+            });
+            const data = await response.text();
+            document.getElementById('chatbotResponse').innerText = data;
+        });
+    </script>
+}
+
 <!-- About Us -->
 <h1 id="AboutUs">About Us</h1>
 <p class="Aboutus">
