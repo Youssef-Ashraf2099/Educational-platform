@@ -30,14 +30,70 @@
         <div class="chat-input">
             <input id="userInput" placeholder="Type your message..." />
             <button id="sendButton" class="btn btn-primary">Send</button>
+            <div id="suggestions" class="suggestions-dropdown"></div>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-                document.getElementById('sendButton').addEventListener('click', async function () {
+        document.getElementById('userInput').addEventListener('input', async function () {
+            const userInput = this.value;
+            const suggestionsDiv = document.getElementById('suggestions');
+
+            // Show suggestions after 1 or 2 characters
+            if (userInput.length >= 1) {
+                // Fetch suggestions from the server
+                const response = await fetch('/api/chatbot/suggestions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userInput)
+                });
+                const suggestions = await response.json();
+
+                // Display suggestions
+                if (suggestions.length > 0) {
+                    suggestionsDiv.innerHTML = suggestions.map(suggestion =>
+                        `<div onclick="selectSuggestion('${suggestion}')">${suggestion}</div>`
+                    ).join('');
+                    suggestionsDiv.style.display = 'block';
+                } else {
+                    suggestionsDiv.style.display = 'none';
+                }
+            } else {
+                suggestionsDiv.style.display = 'none';
+            }
+        });
+
+        function selectSuggestion(suggestion) {
+            // Auto-fill the input field with the selected suggestion
+            document.getElementById('userInput').value = suggestion;
+
+            // Focus the input field and move the cursor to the end
+            const inputField = document.getElementById('userInput');
+            inputField.focus();
+            inputField.setSelectionRange(suggestion.length, suggestion.length);
+
+            // Hide the suggestions dropdown temporarily
+            document.getElementById('suggestions').style.display = 'none';
+
+            // Trigger the input event to fetch new suggestions
+            const event = new Event('input', { bubbles: true });
+            inputField.dispatchEvent(event);
+        }
+
+        document.getElementById('sendButton').addEventListener('click', async function () {
             const userInput = document.getElementById('userInput').value;
+            const suggestionsDiv = document.getElementById('suggestions');
+
+            if (userInput.trim() === "") {
+                alert("Please enter a message.");
+                return;
+            }
+
+            // Send the user's message to the chatbot
             const response = await fetch('/api/chatbot/chat', {
                 method: 'POST',
                 headers: {
@@ -46,16 +102,22 @@
                 body: JSON.stringify(userInput)
             });
             const data = await response.text();
+
+            // Display the user's message and the chatbot's response
             const chatMessages = document.getElementById('chat-messages');
             const userMessage = document.createElement('div');
             userMessage.className = 'user-message';
             userMessage.innerText = userInput;
             chatMessages.appendChild(userMessage);
+
             const botMessage = document.createElement('div');
             botMessage.className = 'bot-message';
             botMessage.innerText = data;
             chatMessages.appendChild(botMessage);
+
+            // Clear the input field and hide the suggestions dropdown
             document.getElementById('userInput').value = '';
+            suggestionsDiv.style.display = 'none';
         });
     </script>
 }
@@ -84,6 +146,7 @@
 
     .chat-input {
         display: flex;
+        position: relative;
     }
 
         .chat-input input {
@@ -97,6 +160,30 @@
         .chat-input button {
             padding: 10px 20px;
         }
+
+    .suggestions-dropdown {
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        max-height: 150px;
+        overflow-y: auto;
+        width: calc(100% - 20px); /* Match the input width */
+        z-index: 1000;
+        display: none; /* Hidden by default */
+        top: 100%; /* Position below the input */
+        left: 0;
+        margin-top: 5px; /* Add some spacing */
+    }
+
+        .suggestions-dropdown div {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+            .suggestions-dropdown div:hover {
+                background-color: #f1f1f1;
+            }
 
     .user-message {
         text-align: right;

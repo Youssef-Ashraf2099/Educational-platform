@@ -14,6 +14,27 @@ public class ChatbotController : ControllerBase
         _logger = logger;
     }
 
+
+    [HttpPost("suggestions")]
+    public IActionResult GetSuggestions([FromBody] string userInput)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(userInput))
+            {
+                return BadRequest("User input cannot be empty.");
+            }
+
+            var suggestions = _chatbotService.GetSuggestions(userInput);
+            return Ok(suggestions);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error in ChatbotController: {ex.Message}");
+            return StatusCode(500, "An error occurred while processing your request.");
+        }
+    }
+
     [HttpPost("chat")]
     public IActionResult Chat([FromBody] string userInput)
     {

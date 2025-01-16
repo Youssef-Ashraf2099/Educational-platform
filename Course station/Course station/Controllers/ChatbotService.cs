@@ -3,18 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using Course_station.Models;
 using Microsoft.Extensions.Logging;
-//using FuzzySharp;
-using System.Diagnostics;
 
 public class ChatbotService
 {
     private readonly SimpleLanguageModel _languageModel;
     private readonly ILogger<ChatbotService> _logger;
+    private Func<SimpleLanguageModel> value;
+    private ILogger<ChatbotService> logger;
 
     public ChatbotService(SimpleLanguageModel languageModel, ILogger<ChatbotService> logger)
     {
         _languageModel = languageModel;
         _logger = logger;
+    }
+
+    public ChatbotService(Func<SimpleLanguageModel> value, ILogger<ChatbotService> logger)
+    {
+        this.value = value;
+        this.logger = logger;
+    }
+
+    public List<string> GetSuggestions(string userInput)
+    {
+        var commonQuestions = new List<string>
+    {
+        "what courses do you offer",
+        "what courses do you suggest",
+        "what courses do you recommend",
+        "what courses can i take",
+        "who are the instructors",
+        "can you suggest instructors",
+        "can you recommend instructors",
+        "tell me about the instructors",
+        "what instructors do you have"
+    };
+
+        var suggestions = commonQuestions
+            .Where(q => LevenshteinDistance(userInput.ToLower(), q.ToLower()) <= 5)
+            .ToList();
+
+        return suggestions;
     }
 
     public string GetResponse(string userInput)
@@ -87,22 +115,22 @@ public class ChatbotService
         return greetings.Any(greeting => input.Contains(greeting));
     }
 
-    private string FuzzyMatchCommonQuestion(string input)
+    private string? FuzzyMatchCommonQuestion(string input)
     {
         var commonQuestions = new List<string>
-    {
-        "what courses do you offer",
-        "what courses do you suggest",
-        "what courses do you recommend",
-        "what courses can i take",
-        "who are the instructors",
-        "can you suggest instructors",
-        "can you recommend instructors",
-        "tell me about the instructors",
-        "what instructors do you have"
-    };
+        {
+            "what courses do you offer",
+            "what courses do you suggest",
+            "what courses do you recommend",
+            "what courses can i take",
+            "who are the instructors",
+            "can you suggest instructors",
+            "can you recommend instructors",
+            "tell me about the instructors",
+            "what instructors do you have"
+        };
 
-        string bestMatch = null;
+        string? bestMatch = null;
         int bestScore = int.MaxValue;
 
         foreach (var question in commonQuestions)
@@ -123,6 +151,7 @@ public class ChatbotService
 
         return null;
     }
+
     private string HandleCommonQuestion(string matchedQuestion)
     {
         if (matchedQuestion.Contains("course"))
@@ -193,6 +222,4 @@ public class ChatbotService
 
         return d[n, m];
     }
-
-
 }
