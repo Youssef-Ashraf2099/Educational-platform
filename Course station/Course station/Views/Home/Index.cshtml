@@ -101,27 +101,30 @@
                 thinkingMessage.innerText = 'Thinking' + '.'.repeat(dots);
             }, 500);
 
-            const response = await fetch('/api/chatbot/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userInput)
-            });
-            const data = await response.text();
+            // Simulate a delay before showing the response
+            setTimeout(async () => {
+                const response = await fetch('/api/chatbot/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userInput)
+                });
+                const data = await response.text();
 
-            // Stop the thinking animation
-            clearInterval(thinkingInterval);
+                // Stop the thinking animation
+                clearInterval(thinkingInterval);
 
-            // Remove thinking animation and add bot response
-            chatMessages.removeChild(thinkingMessage);
-            const botMessage = document.createElement('div');
-            botMessage.className = 'bot-message';
-            botMessage.innerText = data;
-            chatMessages.appendChild(botMessage);
+                // Remove thinking animation and add bot response
+                chatMessages.removeChild(thinkingMessage);
+                const botMessage = document.createElement('div');
+                botMessage.className = 'bot-message';
+                botMessage.innerText = data;
+                chatMessages.appendChild(botMessage);
 
-            document.getElementById('userInput').value = '';
-            suggestionsDiv.style.display = 'none';
+                document.getElementById('userInput').value = '';
+                suggestionsDiv.style.display = 'none';
+            }, 2000); // 2-second delay
         });
     </script>
 }
@@ -216,7 +219,6 @@
         color: #6c757d;
     }
 </style>
-
 
 <!-- About Us -->
 <h1 id="AboutUs">About Us</h1>
