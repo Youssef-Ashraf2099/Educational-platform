@@ -14,7 +14,6 @@ public class ChatbotController : ControllerBase
         _logger = logger;
     }
 
-
     [HttpPost("suggestions")]
     public IActionResult GetSuggestions([FromBody] string userInput)
     {

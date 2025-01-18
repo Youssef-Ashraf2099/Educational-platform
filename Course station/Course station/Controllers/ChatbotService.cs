@@ -6,56 +6,36 @@ using Microsoft.Extensions.Logging;
 
 public class ChatbotService
 {
-    private readonly SimpleLanguageModel _languageModel;
+    private readonly ApplicationDbContext _dbContext;
     private readonly ILogger<ChatbotService> _logger;
-    private Func<SimpleLanguageModel> value;
-    private ILogger<ChatbotService> logger;
 
-    public ChatbotService(SimpleLanguageModel languageModel, ILogger<ChatbotService> logger)
+    public ChatbotService(ApplicationDbContext dbContext, ILogger<ChatbotService> logger)
     {
-        _languageModel = languageModel;
+        _dbContext = dbContext;
         _logger = logger;
-    }
-
-    public ChatbotService(Func<SimpleLanguageModel> value, ILogger<ChatbotService> logger)
-    {
-        this.value = value;
-        this.logger = logger;
     }
 
     public List<string> GetSuggestions(string userInput)
     {
-        var commonQuestions = new List<string>
-    {
-        "what courses do you offer",
-        "what courses do you suggest",
-        "what courses do you recommend",
-        "what courses can i take",
-        "who are the instructors",
-        "can you suggest instructors",
-        "can you recommend instructors",
-        "tell me about the instructors",
-        "what instructors do you have"
-    };
-
-        // Convert input to lowercase for case-insensitive matching
         var lowerInput = userInput.ToLower();
 
-        // Use prefix matching for early predictions
-        var suggestions = commonQuestions
-            .Where(q => q.StartsWith(lowerInput))
+        // Fetch course titles and instructor names from the database
+        var courseTitles = _dbContext.Courses
+            .Where(c => c.Title.ToLower().StartsWith(lowerInput))
+            .Select(c => c.Title)
             .ToList();
 
-        // If prefix matching doesn't yield enough results, use substring matching
-        if (suggestions.Count < 3) // Adjust the threshold as needed
-        {
-            suggestions = commonQuestions
-                .Where(q => q.Contains(lowerInput))
-                .ToList();
-        }
+        var instructorNames = _dbContext.Instructors
+            .Where(i => i.InstructorName.ToLower().StartsWith(lowerInput))
+            .Select(i => i.InstructorName)
+            .ToList();
+
+        // Combine and return suggestions
+        var suggestions = courseTitles.Concat(instructorNames).Take(5).ToList();
 
         return suggestions;
     }
+
     public string GetResponse(string userInput)
     {
         try
@@ -75,9 +55,14 @@ public class ChatbotService
                 return HandleCommonQuestion(matchedQuestion);
             }
 
-            // Get course and instructor suggestions with fuzzy matching
-            var courseSuggestions = _languageModel.SuggestCourses(userInput);
-            var instructorSuggestions = _languageModel.SuggestInstructors(userInput);
+            // Get course and instructor suggestions from the database
+            var courseSuggestions = _dbContext.Courses
+                .Where(c => c.Title.ToLower().Contains(lowerInput))
+                .ToList();
+
+            var instructorSuggestions = _dbContext.Instructors
+                .Where(i => i.InstructorName.ToLower().Contains(lowerInput))
+                .ToList();
 
             // Generate a response based on the suggestions
             string response = "";
@@ -87,7 +72,7 @@ public class ChatbotService
                 response += "Here are some courses you might be interested in:\n";
                 foreach (var course in courseSuggestions)
                 {
-                    response += $"- {course.Title}\n";
+                    response += $"- {course.Title} (Category: {course.DiffLevel})\n";
                 }
             }
 
@@ -96,7 +81,7 @@ public class ChatbotService
                 response += "\nHere are some instructors you might want to check out:\n";
                 foreach (var instructor in instructorSuggestions)
                 {
-                    response += $"- {instructor.InstructorName}\n";
+                    response += $"- {instructor.InstructorName} (Expertise: {instructor.ExpertiseArea})\n";
                 }
             }
 
@@ -108,7 +93,7 @@ public class ChatbotService
             // Fallback for unrecognized input
             if (!courseSuggestions.Any() && !instructorSuggestions.Any() && !IsGreeting(lowerInput) && string.IsNullOrEmpty(matchedQuestion))
             {
-                response = "I'm here to help you find courses and instructors. Try asking something like, 'Can you recommend a course on machine learning?'";
+                response = "I'm here to help you find courses and instructors. Try asking something like, 'what courses do you recommend ? or who are the instructors ?'";
             }
 
             return response;
@@ -168,15 +153,15 @@ public class ChatbotService
         if (matchedQuestion.Contains("course"))
         {
             // Handle course-related questions
-            var courseSuggestions = _languageModel.SuggestCourses(""); // Empty input to get all courses
+            var courseSuggestions = _dbContext.Courses.ToList(); // Fetch all courses
             if (courseSuggestions.Any())
             {
                 string response = "We offer a wide range of courses. Here are some popular ones:\n";
                 foreach (var course in courseSuggestions)
                 {
-                    response += $"- {course.Title}\n";
+                    response += $"- {course.Title} (Category: {course.DiffLevel})\n";
                 }
-                response += "You can ask me about a specific topic, like 'Can you recommend a course on machine learning?'";
+                response += "You can ask me about a specific topic, like ";
                 return response;
             }
             else
@@ -187,15 +172,15 @@ public class ChatbotService
         else if (matchedQuestion.Contains("instructor"))
         {
             // Handle instructor-related questions
-            var instructorSuggestions = _languageModel.SuggestInstructors(""); // Empty input to get all instructors
+            var instructorSuggestions = _dbContext.Instructors.ToList(); // Fetch all instructors
             if (instructorSuggestions.Any())
             {
                 string response = "Our instructors are industry experts. Here are some of them:\n";
                 foreach (var instructor in instructorSuggestions)
                 {
-                    response += $"- {instructor.InstructorName}\n";
+                    response += $"- {instructor.InstructorName} (Expertise: {instructor.ExpertiseArea})\n";
                 }
-                response += "You can ask me about instructors in a specific field, like 'Who teaches machine learning?'";
+                response += "those are the available instructors'";
                 return response;
             }
             else
