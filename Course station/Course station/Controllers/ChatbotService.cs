@@ -93,7 +93,7 @@ public class ChatbotService
             // Fallback for unrecognized input
             if (!courseSuggestions.Any() && !instructorSuggestions.Any() && !IsGreeting(lowerInput) && string.IsNullOrEmpty(matchedQuestion))
             {
-                response = "I'm here to help you find courses and instructors. Try asking something like, 'what courses do you recommend ? or who are the instructors ?'";
+                response = "I'm here to help you find courses and instructors. Try asking something like, 'what courses do you recommend ? or who are the instructors ?' as i am still under development";
             }
 
             return response;
@@ -161,7 +161,7 @@ public class ChatbotService
                 {
                     response += $"- {course.Title} (Category: {course.DiffLevel})\n";
                 }
-                response += "You can ask me about a specific topic, like ";
+                response += "You can ask me about more specific topic,if you like ";
                 return response;
             }
             else
@@ -189,7 +189,7 @@ public class ChatbotService
             }
         }
 
-        // Default response for unrecognized common questions
+      
         return "I'm here to help you find courses and instructors. Try asking something like, 'Can you recommend a course on machine learning?'";
     }
 
