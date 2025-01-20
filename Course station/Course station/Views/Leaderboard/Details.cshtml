@@ -1,8 +1,89 @@
-@model Course_station.Models.Leaderboard
+﻿@model Course_station.Models.Leaderboard
 
 @{
     ViewData["Title"] = "Rankings Details";
 }
+
+<style>
+    /* General styling */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    h2, h4 {
+        color: #343a40;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .table th, .table td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .table th {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    /* Styling for ranks */
+    .rank-1 {
+        background-color: #ffd700; /* Gold */
+        font-weight: bold;
+    }
+
+    .rank-2 {
+        background-color: #c0c0c0; /* Silver */
+        font-weight: bold;
+    }
+
+    .rank-3 {
+        background-color: #cd7f32; /* Bronze */
+        font-weight: bold;
+    }
+
+    /* Crown and medal icons */
+    .crown-icon {
+        font-size: 24px;
+        color: #ffd700;
+    }
+
+    .medal-icon {
+        font-size: 20px;
+        color: #c0c0c0;
+    }
+
+    .bronze-icon {
+        font-size: 20px;
+        color: #cd7f32;
+    }
+
+    /* Button styling */
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .btn-primary:hover, .btn-secondary:hover {
+        opacity: 0.9;
+    }
+</style>
 
 <h2>Leaderboard Details</h2>
 
@@ -24,39 +105,43 @@
     <h4>Rankings</h4>
     <table class="table">
         <thead>
-        <tr>
-            <th>
-                Rank
-            </th>
-            <th>
-                Student
-            </th>
-            <th>
-                Course
-            </th>
-            <th>
-                Score
-            </th>
-        </tr>
+            <tr>
+                <th>Rank</th>
+                <th>Student</th>
+                <th>Course</th>
+                <th>Score</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var ranking in Model.Rankings)
-        {
-            <tr>
-                <td>
-                    @ranking.Rank
-                </td>
-                <td>
-                    @(ranking.Learner != null ? ranking.Learner.FirstName : "Unknown")
-                </td>
-                <td>
-                    @(ranking.Course != null ? ranking.Course.Title : "N/A")
-                </td>
-                <td>
-                    @ranking.TotalPoints
-                </td>
-            </tr>
-        }
+            @foreach (var ranking in Model.Rankings)
+            {
+                <tr class="@(ranking.Rank == 1 ? "rank-1" : ranking.Rank == 2 ? "rank-2" : ranking.Rank == 3 ? "rank-3" : "")">
+                    <td>
+                        @if (ranking.Rank == 1)
+                        {
+                            <span class="crown-icon">👑</span>
+                        }
+                        else if (ranking.Rank == 2)
+                        {
+                            <span class="medal-icon">🥈</span>
+                        }
+                        else if (ranking.Rank == 3)
+                        {
+                            <span class="bronze-icon">🥉</span>
+                        }
+                        @ranking.Rank
+                    </td>
+                    <td>
+                        @(ranking.Learner != null ? ranking.Learner.FirstName : "Unknown")
+                    </td>
+                    <td>
+                        @(ranking.Course != null ? ranking.Course.Title : "N/A")
+                    </td>
+                    <td>
+                        @ranking.TotalPoints
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 }
@@ -69,3 +154,19 @@ else
     <a asp-action="Edit" asp-route-id="@Model.BoardId" class="btn btn-primary">Edit</a> |
     <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
+
+<script>
+    // JavaScript to add hover effects or other interactivity
+    document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll(".table tbody tr");
+        rows.forEach(row => {
+            row.addEventListener("mouseenter", () => {
+                row.style.transform = "scale(1.02)";
+                row.style.transition = "transform 0.2s";
+            });
+            row.addEventListener("mouseleave", () => {
+                row.style.transform = "scale(1)";
+            });
+        });
+    });
+</script>
