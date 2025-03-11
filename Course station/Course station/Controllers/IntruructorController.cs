@@ -657,6 +657,48 @@ namespace Course_station.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        //public async Task<IActionResult> AssignQuest()
+        //{
+        //    var quests = await _context.Quests.ToListAsync();
+        //    var learners = await _context.Learners.ToListAsync();
+
+        //    ViewBag.Quests = new SelectList(quests, "QuestId", "Title");
+        //    ViewBag.Learners = new SelectList(learners, "LearnerId", "FullName");
+
+        //    var model = new LearnerCollaboration
+        //    {
+        //        LearnerId = 1,
+        //        QuestId = 1,
+        //        CompletionStatus = "Incomplete",
+        //        Learner = new Learner(), // Ensure this is properly initialized
+        //        Quest = new Collaborative() // Ensure this is properly initialized
+        //    };
+
+        //    ViewData["Title"] = "Assign Quest";
+        //    return View(model);
+        //}
+
+
+        //// POST: Instructor/AssignQuest
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> AssignQuest(LearnerCollaboration model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.LearnerCollaborations.Add(model);
+        //        await _context.SaveChangesAsync();
+
+        //        TempData["Message"] = "Quest assigned successfully!";
+        //        return RedirectToAction(nameof(Index));
+        //    }
+
+        //    ViewBag.Quests = new SelectList(await _context.Quests.ToListAsync(), "QuestId", "Title");
+        //    ViewBag.Learners = new SelectList(await _context.Learners.ToListAsync(), "LearnerId", "FullName");
+        //    return View(model);
+        //}
+
+
         // 8. Update the deadline of a quest
         [HttpPost]
         public async Task<IActionResult> DeadlineUpdate(int questId, DateTime deadline)
