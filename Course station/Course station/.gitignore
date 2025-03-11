@@ -1,0 +1,60 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/Educational-platform/FileContentIndex
+/.vs/slnx.sqlite
+.vs/
+
+# Ignore all .log files
+*.log
+
+# Ignore node_modules directory
+node_modules/
+
+# Ignore compiled code
+*.class
+
+# Ignored Identifyer
+*.Zone.Identifier
+
+/.vs
+/.vs/Educational-platform/FileContentIndex
+/.gitignore
+
+# Ignore build directories
+bin/
+obj/
+
+# Ignore appsettings.json and appsettings.Development.json
+appsettings.json
+appsettings.Development.json
+
+# Ignore ApplicationDbContext.cs
+Course station/Models/ApplicationDbContext.cs
+
+# Ignore build files
+*.dll
+*.exe
+*.pdb
+*.cache
+*.ilk
+*.log
+*.obj
+*.o
+*.so
+*.dylib
+*.lib
+*.a
+*.exp
+*.idb
+*.ipdb
+*.iobj
+*.ipch
+*.iobj
+*.tlog
+*.lastbuildstate
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
