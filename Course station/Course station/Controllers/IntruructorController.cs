@@ -484,65 +484,20 @@ namespace Course_station.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> UploadProfilePicture(int instructorId, IFormFile profilePicture)
-        //{
-        //    if (profilePicture != null && profilePicture.Length > 0)
-        //    {
-        //        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
-        //        if (!Directory.Exists(uploadsFolder))
-        //        {
-        //            Directory.CreateDirectory(uploadsFolder);
-        //        }
-
-        //        var filePath = Path.Combine(uploadsFolder, $"{instructorId}_profile.jpg");
-
-        //        using (var stream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            await profilePicture.CopyToAsync(stream);
-        //        }
-
-        //        TempData["Message"] = "Profile picture uploaded successfully!";
-        //    }
-        //    else
-        //    {
-        //        TempData["ErrorMessage"] = "Please select a valid image file.";
-        //    }
-
-        //    return RedirectToAction(nameof(Details), new { id = instructorId });
-        //}
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UploadProfilePicture(int instructorId, IFormFile profilePicture)
         {
             if (profilePicture != null && profilePicture.Length > 0)
             {
-                // Validate file type (optional)
-                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
-                var extension = Path.GetExtension(profilePicture.FileName).ToLowerInvariant();
-
-                if (!allowedExtensions.Contains(extension))
-                {
-                    TempData["ErrorMessage"] = "Invalid file type. Please upload a valid image file (jpg, jpeg, png, gif).";
-                    return RedirectToAction("Details", new { id = instructorId });
-                }
-
-                // Define the path to save the image
-                var fileName = $"{instructorId}_profile{extension}";
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
-
-                // Ensure the images directory exists
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
-                var filePath = Path.Combine(uploadsFolder, fileName);
+                var filePath = Path.Combine(uploadsFolder, $"{instructorId}_profile.jpg");
 
-                // Save the file
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await profilePicture.CopyToAsync(stream);
@@ -557,6 +512,8 @@ namespace Course_station.Controllers
 
             return RedirectToAction(nameof(Details), new { id = instructorId });
         }
+
+
 
         private bool InstructorExists(int id)
         {
@@ -633,19 +590,6 @@ namespace Course_station.Controllers
         {
             return View();
         }
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> CreateCourse([Bind("CourseId,Title,Description,DiffLevel,CreditPoint,LearningObjective")] Course course)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Courses.Add(course);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction("Home", "Instructor");
-        //    }
-        //    return View(course);
-        //}
 
 
         [HttpPost]

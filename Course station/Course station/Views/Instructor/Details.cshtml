@@ -12,8 +12,7 @@
         <div class="profile-cover-photo"></div>
         <div class="profile-info animate__animated animate__fadeIn">
             <div class="profile-photo-container">
-                <img src="~/images/@($"{Model.InstructorId}_profile.jpg?{DateTime.Now.Ticks}")" alt="Profile Picture" class="profile-photo">
-
+                 <img src="~/images/@($"{Model.InstructorId}_profile.jpg?{DateTime.Now.Ticks}")" alt="Profile Picture" class="profile-photo"> 
                 <form id="uploadPhotoForm" asp-action="UploadProfilePicture" asp-controller="Instructor" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="instructorId" value="@Model.InstructorId" />
                     <input type="file" id="profilePictureInput" name="profilePicture" class="d-none" />
