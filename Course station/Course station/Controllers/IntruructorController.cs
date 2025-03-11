@@ -515,42 +515,48 @@ namespace Course_station.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UploadProfilePicture(int instructorId, IFormFile profilePicture)
         {
             if (profilePicture != null && profilePicture.Length > 0)
             {
-                // Validate the file type (optional)
+                // Validate file type (optional)
                 var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
                 var extension = Path.GetExtension(profilePicture.FileName).ToLowerInvariant();
 
                 if (!allowedExtensions.Contains(extension))
                 {
-                    // Handle invalid file types (e.g., show an error message)
+                    TempData["ErrorMessage"] = "Invalid file type. Please upload a valid image file (jpg, jpeg, png, gif).";
                     return RedirectToAction("Details", new { id = instructorId });
                 }
 
                 // Define the path to save the image
                 var fileName = $"{instructorId}_profile{extension}";
-                var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images");
-                var filePath = Path.Combine(uploads, fileName);
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
 
                 // Ensure the images directory exists
-                if (!Directory.Exists(uploads))
+                if (!Directory.Exists(uploadsFolder))
                 {
-                    Directory.CreateDirectory(uploads);
+                    Directory.CreateDirectory(uploadsFolder);
                 }
+
+                var filePath = Path.Combine(uploadsFolder, fileName);
 
                 // Save the file
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await profilePicture.CopyToAsync(fileStream);
+                    await profilePicture.CopyToAsync(stream);
                 }
+
+                TempData["Message"] = "Profile picture uploaded successfully!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Please select a valid image file.";
             }
 
-            // Redirect back to the instructor's details page
-            return RedirectToAction("Details", new { id = instructorId });
+            return RedirectToAction(nameof(Details), new { id = instructorId });
         }
-
 
         private bool InstructorExists(int id)
         {

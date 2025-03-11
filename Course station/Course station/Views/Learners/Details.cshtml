@@ -9,7 +9,7 @@
         <div class="hero-overlay"></div>
         <div class="profile-header">
             <div class="profile-image-container">
-                <img src="~/images/@($"{Model.Learner.LearnerId}_profile.jpg")" alt="Profile Picture" class="profile-image">
+                <img src="~/images/@($"{Model.Learner.LearnerId}_profile.jpg")?v=@DateTime.Now.Ticks" alt="Profile Picture" class="profile-image">
                 <div class="profile-image-upload">
                     <form id="uploadForm" asp-action="UploadProfilePicture" method="post" enctype="multipart/form-data" class="upload-form">
                         <input type="file" id="profilePicture" name="profilePicture" class="file-input" onchange="submitForm()">
