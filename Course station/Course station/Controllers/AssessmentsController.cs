@@ -45,11 +45,12 @@ namespace Course_station.Controllers
             {
                 return NotFound();
             }
-            var assessment
-                = await _context.Assessments
-                    .Include(a => a.Module)
-                    .Include(a => a.TakenAssessments)
-                    .FirstOrDefaultAsync(a => a.AssessmentId == id);
+
+            var assessment = await _context.Assessments
+                .Include(a => a.TakenAssessments)
+                .ThenInclude(ta => ta.Learner)
+                .FirstOrDefaultAsync(a => a.AssessmentId == id);
+
             if (assessment == null)
             {
                 return NotFound();
@@ -59,12 +60,18 @@ namespace Course_station.Controllers
                 ? new
                 {
                     AverageScore = assessment.TakenAssessments.Average(ta => ta.ScoredPoint ?? 0),
-                    AttemptCount = assessment.TakenAssessments.Count(),
-                    PassCount = assessment.TakenAssessments.Count(ta => ta.ScoredPoint >= assessment.PassingMarks)
+                    HighestScore = assessment.TakenAssessments.Max(ta => ta.ScoredPoint ?? 0),
+                    LowestScore = assessment.TakenAssessments.Min(ta => ta.ScoredPoint ?? 0)
                 }
                 : null;
+
+            ViewBag.AverageScore = analytics?.AverageScore;
+            ViewBag.HighestScore = analytics?.HighestScore;
+            ViewBag.LowestScore = analytics?.LowestScore;
+
             return View(assessment);
         }
+
         public IActionResult Take(int? id)
         {
             if (id == null)
@@ -93,69 +100,58 @@ namespace Course_station.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Take([Bind("AssessmentId,LearnerId,ScoredPoint")] TakenAssessment takenAssessment)
+        public async Task<IActionResult> Take(int assessmentId, int ScoredPoint)
         {
-            if (!ModelState.IsValid)
+            // Fetch the assessment details
+            var assessment = await _context.Assessments
+                .Include(a => a.TakenAssessments)
+                .FirstOrDefaultAsync(a => a.AssessmentId == assessmentId);
+
+            if (assessment == null)
             {
-                TempData["Error"] = "Invalid data. Please check your input.";
-                return View(takenAssessment);
+                TempData["Error"] = "Assessment not found.";
+                return RedirectToAction("Index");
             }
 
-            try
+            // Validate the score
+            if (ScoredPoint > assessment.TotalMarks)
             {
-                // Fetch the assessment details
-                var assessment = await _context.Assessments
-                    .Include(a => a.TakenAssessments)
-                    .FirstOrDefaultAsync(a => a.AssessmentId == takenAssessment.AssessmentId);
-
-                if (assessment == null)
-                {
-                    TempData["Error"] = "Assessment not found.";
-                    return RedirectToAction("Index");
-                }
-
-                // Validate the score
-                if (takenAssessment.ScoredPoint > assessment.TotalMarks)
-                {
-                    ModelState.AddModelError("ScoredPoint", "Score cannot exceed total marks.");
-                    return View(takenAssessment);
-                }
-
-                // Ensure LearnerId is valid
-                var learnerId = HttpContext.Session.GetInt32("LearnerId");
-                if (learnerId == null || learnerId == 0)
-                {
-                    TempData["Error"] = "You must be logged in to submit an assessment.";
-                    return RedirectToAction("Login", "Account");
-                }
-
-                takenAssessment.LearnerId = learnerId.Value;
-
-                // Check if the learner already has an entry for this assessment
-                var existingAttempt = await _context.TakenAssessments
-                    .FirstOrDefaultAsync(ta => ta.AssessmentId == takenAssessment.AssessmentId && ta.LearnerId == learnerId);
-
-                if (existingAttempt != null)
-                {
-                    TempData["Error"] = "You have already submitted a score for this assessment.";
-                    return RedirectToAction("Details", "Learners", new { id = learnerId });
-                }
-
-                // Add the new attempt and save to the database
-                _context.TakenAssessments.Add(takenAssessment);
-                await _context.SaveChangesAsync();
-
-                // Update score analytics and learner profile
-                // Add your logic here to update analytics and learner profile
-
-                TempData["Success"] = "Your score has been successfully submitted.";
-                return RedirectToAction("ViewScore", new { id = takenAssessment.AssessmentId, learnerId = learnerId });
+                TempData["Error"] = "Score cannot exceed total marks.";
+                return RedirectToAction("Take", new { id = assessmentId });
             }
-            catch (Exception ex)
+
+            // Get LearnerId from session
+            var learnerId = HttpContext.Session.GetInt32("LearnerId");
+            if (learnerId == null || learnerId == 0)
             {
-                ModelState.AddModelError("", "An error occurred while saving the assessment. Please try again.");
-                return View(takenAssessment);
+                TempData["Error"] = "You must be logged in to submit an assessment.";
+                return RedirectToAction("Login", "Account");
             }
+
+            // Check if the learner already has an entry for this assessment
+            var existingAttempt = await _context.TakenAssessments
+                .FirstOrDefaultAsync(ta => ta.AssessmentId == assessmentId && ta.LearnerId == learnerId);
+
+            if (existingAttempt != null)
+            {
+                TempData["Error"] = "You have already submitted a score for this assessment.";
+                return RedirectToAction("Details", "Learners", new { id = learnerId });
+            }
+
+            // Create new TakenAssessment
+            var takenAssessment = new TakenAssessment
+            {
+                LearnerId = learnerId.Value,
+                AssessmentId = assessmentId,
+                ScoredPoint = ScoredPoint
+            };
+
+            // Add the new attempt and save to the database
+            _context.TakenAssessments.Add(takenAssessment);
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Your score has been successfully submitted.";
+            return RedirectToAction("ViewScore", new { id = assessmentId, learnerId = learnerId });
         }
 
 

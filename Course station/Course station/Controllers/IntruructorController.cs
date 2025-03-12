@@ -633,17 +633,19 @@ namespace Course_station.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAssessment([Bind("AssessmentId,ModuleId,Title,Description,MaxPoints")] Assessment assessment)
+        public async Task<IActionResult> CreateAssessment([Bind("AssessmentId,ModuleId,Title,Description,PassingMarks,TotalMarks")] Assessment assessment)
         {
             if (ModelState.IsValid)
             {
                 _context.Assessments.Add(assessment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ViewBag.Modules = new SelectList(_context.Modules, "ModuleId", "Title", assessment.ModuleId);
+                return RedirectToAction(nameof(Home));
             }
-            ViewBag.Modules = new SelectList(_context.Modules, "ModuleId", "Title", assessment.ModuleId);
+            //ViewBag.Modules = new SelectList(_context.Modules, "ModuleId", "Title", assessment.ModuleId);
             return View(assessment);
         }
+
 
         // 7. Add a new collaborative Quest
         [HttpPost]

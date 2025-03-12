@@ -6,13 +6,18 @@
 
 <h2>@ViewData["Title"]</h2>
 
-@if (Model?.Assessment == null)
+@if (TempData["Error"] != null)
 {
-    <p>Assessment is done. Your score has been recorded.</p>
-    <p>Updating score analytics and learner profile...</p>
-    <!-- Add any additional logic or display elements for updating analytics and learner profile here -->
-    <a asp-controller="Learners" asp-action="Home" class="btn btn-primary">Go to Home Page </a>
-    
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+@if (Model.Assessment == null)
+{
+    <p>Assessment is done. Your score has not been recorded.</p>
+    <p>Score analytics and learner profile is not updated</p>
+    <a asp-controller="Learners" asp-action="Home" class="btn btn-primary">Go to Home Page</a>
 }
 else
 {
@@ -21,19 +26,14 @@ else
     <p>Total Marks: @Model.Assessment.TotalMarks</p>
     <p>Passing Marks: @Model.Assessment.PassingMarks</p>
 
-    <form asp-action="Take" method="post">
-        <input type="hidden" asp-for="AssessmentId" />
-        <input type="hidden" asp-for="LearnerId" />
-
+    <form asp-action="Take" asp-route-assessmentId="@Model.Assessment.AssessmentId" method="post">
         <div class="form-group">
             <label for="ScoredPoint">Enter Your Score</label>
-            <input type="number" asp-for="ScoredPoint" class="form-control" />
+            <input type="number" name="ScoredPoint" id="ScoredPoint" class="form-control" required min="0" max="@Model.Assessment.TotalMarks" />
             <span asp-validation-for="ScoredPoint" class="text-danger"></span>
         </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>
+        <a asp-controller="Assessments" asp-action="Index" class="btn btn-secondary">Cancel</a>
     </form>
-
-
-       
 }

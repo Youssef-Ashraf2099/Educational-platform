@@ -1,12 +1,9 @@
-/* login.css */
-
-/* Login form styles */
 .login-container {
     margin-top: 50px;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
-
 .login-form {
     width: 100%;
     max-width: 400px;

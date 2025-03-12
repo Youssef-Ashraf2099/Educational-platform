@@ -18,16 +18,23 @@
             <input asp-for="Description" class="form-control" />
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
+        
         <div class="form-group">
             <label asp-for="TotalMarks" class="control-label"></label>
             <input asp-for="TotalMarks" class="form-control" />
             <span asp-validation-for="TotalMarks" class="text-danger"></span>
         </div>
         <div class="form-group">
+            <label asp-for="PassingMarks" class="control-label"></label>
+            <input asp-for="PassingMarks" class="form-control" />
+            <span asp-validation-for="PassingMarks" class="text-danger"></span>
+        </div>
+        <div class="form-group">
             <label asp-for="ModuleId" class="control-label"></label>
             <select asp-for="ModuleId" class="form-control" asp-items="ViewBag.Modules"></select>
             <span asp-validation-for="ModuleId" class="text-danger"></span>
         </div>
+
         <div class="form-group">
             <input type="submit" value="Create" class="btn btn-primary" />
         </div>
