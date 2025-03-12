@@ -38,17 +38,15 @@
             <tr>
                 <th>Learner</th>
                 <th>Score</th>
-                
             </tr>
         </thead>
         <tbody>
             @foreach (var takenAssessment in Model.TakenAssessments)
-            {  //it gave me null pointer exception but not sure is it learner or asessment it is in the XXXassessmentIDXXX not inserted in the takenAssessment so it does not show detials
-                // i changed namess and made ID
+            {
                 <tr>
-                    <td>@takenAssessment.LearnerId</td> 
+                    <td>@takenAssessment.Learner.FirstName @takenAssessment.Learner.LastName</td>
                     <td>@takenAssessment.ScoredPoint</td>
-                </tr>                  
+                </tr>
             }
         </tbody>
     </table>

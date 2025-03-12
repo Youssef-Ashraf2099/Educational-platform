@@ -29,7 +29,7 @@ else
     <form asp-action="Take" asp-route-assessmentId="@Model.Assessment.AssessmentId" method="post">
         <div class="form-group">
             <label for="ScoredPoint">Enter Your Score</label>
-            <input type="number" asp-for="ScoredPoint" class="form-control" required min="0" max="@Model.Assessment.TotalMarks" />
+            <input type="number" name="ScoredPoint" id="ScoredPoint" class="form-control" required min="0" max="@Model.Assessment.TotalMarks" />
             <span asp-validation-for="ScoredPoint" class="text-danger"></span>
         </div>
 
