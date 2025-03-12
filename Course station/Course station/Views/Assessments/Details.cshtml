@@ -4,54 +4,94 @@
     ViewData["Title"] = "Assessment Details";
 }
 
-<h2>Assessment Details</h2>
-
-<div>
-    <h4>@Model.Title</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Description</dt>
-        <dd class="col-sm-10">@Model.Description</dd>
-        <dt class="col-sm-2">Total Marks</dt>
-        <dd class="col-sm-10">@Model.TotalMarks</dd>
-        <dt class="col-sm-2">Passing Marks</dt>
-        <dd class="col-sm-10">@Model.PassingMarks</dd>
-    </dl>
+<h2 class="text-center">Assessment Details</h2>
+<hr />
+<div class="card mb-4">
+    <div class="card-header">
+        <h4>@Model.Title</h4>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@Model.Description</dd>
+            <dt class="col-sm-3">Total Marks</dt>
+            <dd class="col-sm-9">@Model.TotalMarks</dd>
+            <dt class="col-sm-3">Passing Marks</dt>
+            <dd class="col-sm-9">@Model.PassingMarks</dd>
+        </dl>
+    </div>
 </div>
 
-<h3>Score Analytics</h3>
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">Average Score</dt>
-        <dd class="col-sm-10">@ViewBag.AverageScore</dd>
-        <dt class="col-sm-2">Highest Score</dt>
-        <dd class="col-sm-10">@ViewBag.HighestScore</dd>
-        <dt class="col-sm-2">Lowest Score</dt>
-        <dd class="col-sm-10">@ViewBag.LowestScore</dd>
-    </dl>
+<h3 class="text-center">Score Analytics</h3>
+<hr />
+<div class="card mb-4">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Average Score</dt>
+            <dd class="col-sm-9">@ViewBag.AverageScore</dd>
+            <dt class="col-sm-3">Highest Score</dt>
+            <dd class="col-sm-9">@ViewBag.HighestScore</dd>
+            <dt class="col-sm-3">Lowest Score</dt>
+            <dd class="col-sm-9">@ViewBag.LowestScore</dd>
+        </dl>
+    </div>
 </div>
 
-<h3>Taken Assessments</h3>
-<div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Learner</th>
-                <th>Score</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var takenAssessment in Model.TakenAssessments)
-            {
+<h3 class="text-center">Taken Assessments</h3>
+<hr />
+<div class="card mb-4">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@takenAssessment.Learner.FirstName @takenAssessment.Learner.LastName</td>
-                    <td>@takenAssessment.ScoredPoint</td>
+                    <th>Learner</th>
+                    <th>Score</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var takenAssessment in Model.TakenAssessments)
+                {
+                    <tr>
+                        <td>@takenAssessment.Learner.FirstName @takenAssessment.Learner.LastName</td>
+                        <td>@takenAssessment.ScoredPoint</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<div>
+<div class="text-center">
     <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
+
+<style>
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    .card-header {
+        background-color: #007bff;
+        color: white;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .table {
+        margin-top: 20px;
+    }
+
+    .thead-dark th {
+        background-color: #343a40;
+        color: white;
+    }
+
+    .btn-secondary {
+        margin-top: 20px;
+    }
+</style>
