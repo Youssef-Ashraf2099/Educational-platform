@@ -44,7 +44,11 @@ dotnet add package Microsoft.EntityFrameworkCore.SqlServer
 dotnet add package Microsoft.AspNetCore.Session
 dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore
  ```
-### Step 5: Build and Run the project and ENJOOOY
+### Step 5:Transform sql code to C# Models
+```
+dotnet ef dbcontext scaffold "YourConnectionString" Microsoft.EntityFrameworkCore.SqlServer -o Models
+```
+### Step 6: Build and Run the project and ENJOOOY
 
 ```
 dotnet restore
