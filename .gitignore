@@ -31,3 +31,4 @@ Debug/
 obj/
 Obj/
 /Course station/Course station/Models/ApplicationDbContext.cs
+/Course station/Course station/appsettings.json
