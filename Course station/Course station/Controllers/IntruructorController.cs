@@ -484,65 +484,20 @@ namespace Course_station.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> UploadProfilePicture(int instructorId, IFormFile profilePicture)
-        //{
-        //    if (profilePicture != null && profilePicture.Length > 0)
-        //    {
-        //        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
-        //        if (!Directory.Exists(uploadsFolder))
-        //        {
-        //            Directory.CreateDirectory(uploadsFolder);
-        //        }
-
-        //        var filePath = Path.Combine(uploadsFolder, $"{instructorId}_profile.jpg");
-
-        //        using (var stream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            await profilePicture.CopyToAsync(stream);
-        //        }
-
-        //        TempData["Message"] = "Profile picture uploaded successfully!";
-        //    }
-        //    else
-        //    {
-        //        TempData["ErrorMessage"] = "Please select a valid image file.";
-        //    }
-
-        //    return RedirectToAction(nameof(Details), new { id = instructorId });
-        //}
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UploadProfilePicture(int instructorId, IFormFile profilePicture)
         {
             if (profilePicture != null && profilePicture.Length > 0)
             {
-                // Validate file type (optional)
-                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
-                var extension = Path.GetExtension(profilePicture.FileName).ToLowerInvariant();
-
-                if (!allowedExtensions.Contains(extension))
-                {
-                    TempData["ErrorMessage"] = "Invalid file type. Please upload a valid image file (jpg, jpeg, png, gif).";
-                    return RedirectToAction("Details", new { id = instructorId });
-                }
-
-                // Define the path to save the image
-                var fileName = $"{instructorId}_profile{extension}";
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
-
-                // Ensure the images directory exists
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
-                var filePath = Path.Combine(uploadsFolder, fileName);
+                var filePath = Path.Combine(uploadsFolder, $"{instructorId}_profile.jpg");
 
-                // Save the file
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await profilePicture.CopyToAsync(stream);
@@ -557,6 +512,8 @@ namespace Course_station.Controllers
 
             return RedirectToAction(nameof(Details), new { id = instructorId });
         }
+
+
 
         private bool InstructorExists(int id)
         {
@@ -634,19 +591,6 @@ namespace Course_station.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> CreateCourse([Bind("CourseId,Title,Description,DiffLevel,CreditPoint,LearningObjective")] Course course)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Courses.Add(course);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction("Home", "Instructor");
-        //    }
-        //    return View(course);
-        //}
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -712,6 +656,48 @@ namespace Course_station.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        //public async Task<IActionResult> AssignQuest()
+        //{
+        //    var quests = await _context.Quests.ToListAsync();
+        //    var learners = await _context.Learners.ToListAsync();
+
+        //    ViewBag.Quests = new SelectList(quests, "QuestId", "Title");
+        //    ViewBag.Learners = new SelectList(learners, "LearnerId", "FullName");
+
+        //    var model = new LearnerCollaboration
+        //    {
+        //        LearnerId = 1,
+        //        QuestId = 1,
+        //        CompletionStatus = "Incomplete",
+        //        Learner = new Learner(), // Ensure this is properly initialized
+        //        Quest = new Collaborative() // Ensure this is properly initialized
+        //    };
+
+        //    ViewData["Title"] = "Assign Quest";
+        //    return View(model);
+        //}
+
+
+        //// POST: Instructor/AssignQuest
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> AssignQuest(LearnerCollaboration model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.LearnerCollaborations.Add(model);
+        //        await _context.SaveChangesAsync();
+
+        //        TempData["Message"] = "Quest assigned successfully!";
+        //        return RedirectToAction(nameof(Index));
+        //    }
+
+        //    ViewBag.Quests = new SelectList(await _context.Quests.ToListAsync(), "QuestId", "Title");
+        //    ViewBag.Learners = new SelectList(await _context.Learners.ToListAsync(), "LearnerId", "FullName");
+        //    return View(model);
+        //}
+
 
         // 8. Update the deadline of a quest
         [HttpPost]
