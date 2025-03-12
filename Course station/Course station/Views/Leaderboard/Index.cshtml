@@ -1,29 +1,52 @@
+@* @model IEnumerable<Course_station.Models.Leaderboard> *@
+
+@* @{ *@
+@*     ViewData["Title"] = "Leaderboards "; *@
+@* } *@
+
+@* <h1>Leaderboards </h1> *@
+
+@* <table class="table"> *@
+@*     <thead> *@
+@*     <tr> *@
+@*         <th>Board ID</th> *@
+@*         <th>Season</th> *@
+@*         <th>Actions</th> *@
+@*     </tr> *@
+@*     </thead> *@
+@*     <tbody> *@
+@*     @foreach (var item in Model) *@
+@*     { *@
+@*         <tr> *@
+@*             <td>@item.BoardId</td> *@
+@*             <td>@item.Season</td> *@
+@*             <td> *@
+@*                 <a asp-action="Details" asp-route-id="@item.BoardId">Rankings</a>  *@
+@*             </td> *@
+@*         </tr> *@
+@*     } *@
+@*     </tbody> *@
+@* </table> *@
 @model IEnumerable<Course_station.Models.Leaderboard>
 
 @{
-    ViewData["Title"] = "Leaderboards ";
+    ViewData["Title"] = "Leaderboards";
 }
 
-<h1>Leaderboards </h1>
+<h1 class="text-center">Leaderboards</h1>
+<hr />
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>Board ID</th>
-        <th>Season</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
+<div class="row">
     @foreach (var item in Model)
     {
-        <tr>
-            <td>@item.BoardId</td>
-            <td>@item.Season</td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.BoardId">Rankings</a> 
-            </td>
-        </tr>
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Board ID: @item.BoardId</h5>
+                    <p class="card-text">Season: @item.Season</p>
+                    <a asp-action="Details" asp-route-id="@item.BoardId" class="btn btn-primary">Rankings</a>
+                </div>
+            </div>
+        </div>
     }
-    </tbody>
-</table>
+</div>
