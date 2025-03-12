@@ -637,11 +637,13 @@ namespace Course_station.Controllers
         {
             if (ModelState.IsValid)
             {
+                
                 _context.Assessments.Add(assessment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ViewBag.Modules = new SelectList(_context.Modules, "ModuleId", "Title", assessment.ModuleId);
+                return RedirectToAction(nameof(Home));
             }
-            ViewBag.Modules = new SelectList(_context.Modules, "ModuleId", "Title", assessment.ModuleId);
+            //ViewBag.Modules = new SelectList(_context.Modules, "ModuleId", "Title", assessment.ModuleId);
             return View(assessment);
         }
 
