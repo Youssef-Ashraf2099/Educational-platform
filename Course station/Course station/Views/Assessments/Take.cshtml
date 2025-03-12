@@ -6,66 +6,34 @@
 
 <h2>@ViewData["Title"]</h2>
 
-@if (Model.Assessment==null)  /// el condition is wrong  //moskelaaaa hena as it is equal to null bas heya mesh null  *@ maybe the method is not correct ?
-{///previsouly it was Model.Assessment ==null but i need to actually check the assessment ID therefor we caught first problem *@
-    <p>Assessment is done. Your score has not been recorded.</p> 
-    <p> score analytics and learner profile is not updated</p> 
-    <!-- Add any additional logic or display elements for updating analytics and learner profile here --> 
-    <a asp-controller="Learners" asp-action="Home" class="btn btn-primary">Go to Home Page </a> 
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
 
-} 
-else  //law mawgood hay3mel kedaaa w dah el sa7 *@ *@
- {
-    <h3>@Model.Assessment.Title</h3> 
-   <p>@Model.Assessment.Description</p> 
-    <p>Total Marks: @Model.Assessment.TotalMarks</p> 
-     <p>Passing Marks: @Model.Assessment.PassingMarks</p> 
+@if (Model.Assessment == null)
+{
+    <p>Assessment is done. Your score has not been recorded.</p>
+    <p>Score analytics and learner profile is not updated</p>
+    <a asp-controller="Learners" asp-action="Home" class="btn btn-primary">Go to Home Page</a>
+}
+else
+{
+    <h3>@Model.Assessment.Title</h3>
+    <p>@Model.Assessment.Description</p>
+    <p>Total Marks: @Model.Assessment.TotalMarks</p>
+    <p>Passing Marks: @Model.Assessment.PassingMarks</p>
 
-     <form asp-action="Take" method="post"> 
-        <input type="hidden" asp-for="AssessmentId" /> 
-        <input type="hidden" asp-for="LearnerId" />
+    <form asp-action="Take" asp-route-assessmentId="@Model.Assessment.AssessmentId" method="post">
+        <div class="form-group">
+            <label for="ScoredPoint">Enter Your Score</label>
+            <input type="number" asp-for="ScoredPoint" class="form-control" required min="0" max="@Model.Assessment.TotalMarks" />
+            <span asp-validation-for="ScoredPoint" class="text-danger"></span>
+        </div>
 
-      <div class="form-group">
-             <label for="ScoredPoint">Enter Your Score</label>
-             <input type="number" asp-for="ScoredPoint" class="form-control" />
-             <span asp-validation-for="ScoredPoint" class="text-danger"></span>
-         </div>
-
-         <button type="submit" class="btn btn-primary">Submit</button>
-     </form>
-
-
-
- }
-
- @*wrong logic*@
-@* @if (Model?.Assessment == null) *@
-@* { *@
-@*     <h3>@Model.Assessment.Title</h3>  *@
-@*      <p>@Model.Assessment.Description</p>  *@
-@*     <p>Total Marks: @Model.Assessment.TotalMarks</p>  *@
-@*    <p>Passing Marks: @Model.Assessment.PassingMarks</p>  *@
-
-@*      <form asp-action="Take" method="post">  *@
-@*          <input type="hidden" asp-for="AssessmentId" />  *@
-@*         <input type="hidden" asp-for="LearnerId" />  *@
-
-@*          <div class="form-group">  *@
-@*              <label for="ScoredPoint">Enter Your Score</label>  *@
-@*              <input type="number" asp-for="ScoredPoint" class="form-control" />  *@
-@*              <span asp-validation-for="ScoredPoint" class="text-danger"></span>  *@
-@*         </div>  *@
-
-@*          <button type="submit" class="btn btn-primary">Submit</button>  *@
-@*    </form>  *@
-
-
-@* } *@
-
-@* else *@
-@* { *@
-@*      <p>Assessment is done. Your score has not been recorded.</p>  *@
-@*     <p> score analytics and learner profile is not updated</p>  *@
-@*      <!-- Add any additional logic or display elements for updating analytics and learner profile here -->  *@
-@*      <a asp-controller="Learners" asp-action="Home" class="btn btn-primary">Go to Home Page </a> *@
-@* } *@
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a asp-controller="Assessments" asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+}
