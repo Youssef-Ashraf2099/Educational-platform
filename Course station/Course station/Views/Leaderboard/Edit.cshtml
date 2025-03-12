@@ -1,0 +1,39 @@
+﻿@model Course_station.Models.Leaderboard
+
+@{
+    ViewData["Title"] = "Edit Leaderboard";
+}
+
+<h1>Edit Leaderboard</h1>
+
+<h4>Leaderboard</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div class="form-group">
+                <label asp-for="BoardId" class="control-label"></label>
+                <input asp-for="BoardId" class="form-control" readonly />
+                <span asp-validation-for="BoardId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Season" class="control-label"></label>
+                <input asp-for="Season" class="form-control" />
+                <span asp-validation-for="Season" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,32 +1,3 @@
-@* @model IEnumerable<Course_station.Models.Leaderboard> *@
-
-@* @{ *@
-@*     ViewData["Title"] = "Leaderboards "; *@
-@* } *@
-
-@* <h1>Leaderboards </h1> *@
-
-@* <table class="table"> *@
-@*     <thead> *@
-@*     <tr> *@
-@*         <th>Board ID</th> *@
-@*         <th>Season</th> *@
-@*         <th>Actions</th> *@
-@*     </tr> *@
-@*     </thead> *@
-@*     <tbody> *@
-@*     @foreach (var item in Model) *@
-@*     { *@
-@*         <tr> *@
-@*             <td>@item.BoardId</td> *@
-@*             <td>@item.Season</td> *@
-@*             <td> *@
-@*                 <a asp-action="Details" asp-route-id="@item.BoardId">Rankings</a>  *@
-@*             </td> *@
-@*         </tr> *@
-@*     } *@
-@*     </tbody> *@
-@* </table> *@
 @model IEnumerable<Course_station.Models.Leaderboard>
 
 @{

@@ -4,92 +4,9 @@
     ViewData["Title"] = "Rankings Details";
 }
 
-<style>
-    /* General styling */
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f8f9fa;
-    }
-
-    h2, h4 {
-        color: #343a40;
-    }
-
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .table th, .table td {
-        padding: 12px;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .table th {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .table tbody tr:hover {
-        background-color: #f1f1f1;
-    }
-
-    /* Styling for ranks */
-    .rank-1 {
-        background-color: #ffd700; /* Gold */
-        font-weight: bold;
-    }
-
-    .rank-2 {
-        background-color: #c0c0c0; /* Silver */
-        font-weight: bold;
-    }
-
-    .rank-3 {
-        background-color: #cd7f32; /* Bronze */
-        font-weight: bold;
-    }
-
-    /* Crown and medal icons */
-    .crown-icon {
-        font-size: 24px;
-        color: #ffd700;
-    }
-
-    .medal-icon {
-        font-size: 20px;
-        color: #c0c0c0;
-    }
-
-    .bronze-icon {
-        font-size: 20px;
-        color: #cd7f32;
-    }
-
-    /* Button styling */
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
-
-    .btn-secondary {
-        background-color: #6c757d;
-        border-color: #6c757d;
-    }
-
-    .btn-primary:hover, .btn-secondary:hover {
-        opacity: 0.9;
-    }
-</style>
-
-<h2>Leaderboard Details</h2>
-
+<h2 class="text-center" >Leaderboard Details</h2>
+<hr />
 <div>
-    <h4>Leaderboard</h4>
-    <hr />
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Season)
@@ -170,3 +87,84 @@ else
         });
     });
 </script>
+
+<style>
+    /* General styling */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    h2, h4 {
+        color: #343a40;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .table th, .table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+    /* Styling for ranks */
+    .rank-1 {
+        background-color: #ffd700; /* Gold */
+        font-weight: bold;
+    }
+
+    .rank-2 {
+        background-color: #c0c0c0; /* Silver */
+        font-weight: bold;
+    }
+
+    .rank-3 {
+        background-color: #cd7f32; /* Bronze */
+        font-weight: bold;
+    }
+
+    /* Crown and medal icons */
+    .crown-icon {
+        font-size: 24px;
+        color: #ffd700;
+    }
+
+    .medal-icon {
+        font-size: 20px;
+        color: #c0c0c0;
+    }
+
+    .bronze-icon {
+        font-size: 20px;
+        color: #cd7f32;
+    }
+
+    /* Button styling */
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+        .btn-primary:hover, .btn-secondary:hover {
+            opacity: 0.9;
+        }
+</style>
