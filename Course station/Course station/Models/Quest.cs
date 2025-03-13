@@ -20,4 +20,6 @@ public partial class Quest
     public virtual ICollection<QuestReward> QuestRewards { get; set; } = new List<QuestReward>();
 
     public virtual SkillMastery? SkillMastery { get; set; }
+    public virtual ICollection<LearnerQuest> LearnerQuests { get; set; } = new List<LearnerQuest>();
+
 }

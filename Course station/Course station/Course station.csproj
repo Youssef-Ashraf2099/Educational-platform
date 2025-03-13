@@ -8,9 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\Binder\**" />
     <Compile Remove="Views\Learner\**" />
+    <Content Remove="Models\Binder\**" />
     <Content Remove="Views\Learner\**" />
+    <EmbeddedResource Remove="Models\Binder\**" />
     <EmbeddedResource Remove="Views\Learner\**" />
+    <None Remove="Models\Binder\**" />
     <None Remove="Views\Learner\**" />
 	 
   </ItemGroup>
@@ -32,10 +36,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\Binder\" />
   </ItemGroup>
 
 </Project>
