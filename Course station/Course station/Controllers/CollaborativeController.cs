@@ -134,9 +134,26 @@ namespace Course_station.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var collaborative = await _context.Collaboratives.FindAsync(id);
-            _context.Collaboratives.Remove(collaborative);
-            await _context.SaveChangesAsync();
+            var collaborative = await _context.Collaboratives
+                .Include(c => c.Quest)
+                .FirstOrDefaultAsync(m => m.QuestId == id);
+            if (collaborative == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _context.Collaboratives.Remove(collaborative);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                // Log the error (uncomment ex variable name and write a log.)
+                ModelState.AddModelError("", "Unable to delete. Try again, and if the problem persists, see your system administrator.");
+                return View(collaborative);
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -144,5 +161,6 @@ namespace Course_station.Controllers
         {
             return _context.Collaboratives.Any(e => e.QuestId == id);
         }
+
     }
 }
