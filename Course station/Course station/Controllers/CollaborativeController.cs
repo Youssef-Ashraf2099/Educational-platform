@@ -52,8 +52,26 @@ namespace Course_station.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("QuestId,Deadline,MaxNumParticipants")] Collaborative collaborative)
         {
+            if (!ModelState.IsValid)
+            {
+                // Log ModelState errors to console
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
+                return View(collaborative);
+            }
             if (ModelState.IsValid)
             {
+                // Check if the QuestId exists
+                var quest = await _context.Quests.FindAsync(collaborative.QuestId);
+                if (quest == null)
+                {
+                    ModelState.AddModelError("QuestId", "Invalid Quest ID");
+                    return View(collaborative);
+                }
+
+                // Add the Collaborative entity to the context
                 _context.Add(collaborative);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
