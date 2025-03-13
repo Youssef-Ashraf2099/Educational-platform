@@ -8,12 +8,16 @@
 
 @if (TempData["Message"] != null)
 {
-    <div class="alert alert-success">@TempData["Message"]</div>
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
 }
 
 @if (TempData["ErrorMessage"] != null)
 {
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
 }
 
 <table class="table">
@@ -33,13 +37,18 @@
                 <td>@quest.Description</td>
                 <td>@quest.DifficultyLevel</td>
                 <td>
-                    <form asp-controller="Learners" asp-action="JoinQuest" method="post">
-                        <input type="hidden" name="learnerId" value="@Model.LearnerId" />
-                        <input type="hidden" name="questId" value="@quest.QuestId" />
-                        <button type="submit" class="btn btn-primary">Join Quest</button>
-                    </form>
+                    @if (Model.HasJoinedQuest(quest.QuestId))
+                    {
+                        <span class="text-success">Already Joined</span>
+                    }
+                    else
+                    {
+                        <a asp-action="JoinQuest" asp-route-learnerId="@Model.LearnerId" asp-route-questId="@quest.QuestId" class="btn btn-primary">Join</a>
+                    }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<a asp-action="Home" class="btn btn-secondary">Back to Home</a>

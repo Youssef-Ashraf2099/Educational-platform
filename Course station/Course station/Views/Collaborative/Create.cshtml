@@ -11,7 +11,18 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label asp-for="QuestId" class="control-label"></label>
+
+            <select id="questSelect" class="form-control">
+                <option value="">-- Select Quest --</option>
+                @foreach (var quest in (SelectList)ViewBag.Quests)
+                {
+                    <option value="@quest.Value">@quest.Text</option>
+                }
+            </select>
+            <input type="hidden" asp-for="QuestId" id="QuestId" />
+
             <input asp-for="QuestId" class="form-control" />
+
             <span asp-validation-for="QuestId" class="text-danger"></span>
         </div>
         <div class="form-group">
@@ -32,4 +43,41 @@
 
 <div class="text-center">
     <a asp-action="Index">Back to List</a>
+
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('questSelect').addEventListener('change', function () {
+            var selectedQuestId = this.value;
+            document.getElementById('QuestId').value = selectedQuestId;
+        });
+
+        document.querySelector('form').addEventListener('submit', function (event) {
+            var questId = document.getElementById('QuestId').value;
+            var maxNumParticipants = document.querySelector('input[name="MaxNumParticipants"]').value;
+            var deadline = document.querySelector('input[name="Deadline"]').value;
+
+            console.log("QuestId: " + questId);
+            console.log("MaxNumParticipants: " + maxNumParticipants);
+            console.log("Deadline: " + deadline);
+
+            if (!questId) {
+                console.error("QuestId is required.");
+                event.preventDefault();
+            }
+            if (!maxNumParticipants) {
+                console.error("MaxNumParticipants is required.");
+                event.preventDefault();
+            }
+            if (!deadline) {
+                console.error("Deadline is required.");
+                event.preventDefault();
+            }
+        });
+    </script>
+}
+
+</div>
+

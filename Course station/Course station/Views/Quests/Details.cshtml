@@ -1,60 +1,76 @@
 ﻿@model Course_station.Models.Quest
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Quest Details";
+    var deadline = ViewBag.Deadline as DateTime?;
+    var learnerId = Context.Session.GetInt32("LearnerId");
 }
 
-<h1>Quest Details</h1>
+<div class="container mt-4">
+    <h1>Quest Details</h1>
 
-<div>
-    <h4>Quest</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DifficultyLevel)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DifficultyLevel)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Criteria)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Criteria)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Collaborative)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Collaborative)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SkillMastery)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SkillMastery)
-        </dd>
-        <dt class="col-sm-2">
-            Deadline
-        </dt>
-        <dd class="col-sm-10">
-            @ViewBag.Deadline?.ToString("f")
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.QuestId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Message"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>@Model.Title</h3>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Difficulty Level</dt>
+                <dd class="col-sm-9">@Model.DifficultyLevel</dd>
+
+                <dt class="col-sm-3">Description</dt>
+                <dd class="col-sm-9">@Model.Description</dd>
+
+                <dt class="col-sm-3">Criteria</dt>
+                <dd class="col-sm-9">@Model.Criteria</dd>
+
+                @if (deadline.HasValue)
+                {
+                    <dt class="col-sm-3">Deadline</dt>
+                    <dd class="col-sm-9">@deadline.Value.ToString("MMM dd, yyyy - HH:mm")</dd>
+                }
+
+                @if (Model.Collaborative != null)
+                {
+                    <dt class="col-sm-3">Collaborative Quest</dt>
+                    <dd class="col-sm-9">Yes</dd>
+
+                    <dt class="col-sm-3">Maximum Participants</dt>
+                    <dd class="col-sm-9">@Model.Collaborative.MaxNumParticipants</dd>
+                }
+                else
+                {
+                    <dt class="col-sm-3">Collaborative Quest</dt>
+                    <dd class="col-sm-9">No</dd>
+                }
+            </dl>
+        </div>
+        <div class="card-footer">
+            @if (learnerId.HasValue && Model.Collaborative != null)
+            {
+                <form asp-controller="Quests" asp-action="Join" method="post">
+                    <input type="hidden" name="questId" value="@Model.QuestId" />
+                    <input type="hidden" name="learnerId" value="@learnerId" />
+                    <button type="submit" class="btn btn-success">Join Quest</button>
+                </form>
+            }
+
+            <a asp-action="Participants" asp-route-id="@Model.QuestId" class="btn btn-info mt-2">View Participants</a>
+            <a asp-action="Index" class="btn btn-secondary mt-2">Back to List</a>
+        </div>
+    </div>
 </div>
