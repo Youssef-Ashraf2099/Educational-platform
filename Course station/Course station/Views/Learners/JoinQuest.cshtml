@@ -1,43 +1,17 @@
 ﻿@model Course_station.Controllers.LearnersController.JoinQuestViewModel
-
 @{
     ViewData["Title"] = "Join Quest";
 }
 
-<h2>Join Quest</h2>
+<h2>Join Quest: @Model.Quest.Title</h2>
+<p><strong>Description:</strong> @Model.Quest.Description</p>
+<p><strong>Difficulty:</strong> @Model.Quest.DifficultyLevel</p>
+<p><strong>Criteria:</strong> @Model.Quest.Criteria</p>
 
-<div class="card">
-    <div class="card-header">
-        <h3>@Model.Quest.Title</h3>
-    </div>
-    <div class="card-body">
-        <p><strong>Description:</strong> @Model.Quest.Description</p>
-        <p><strong>Difficulty Level:</strong> @Model.Quest.DifficultyLevel</p>
-        <p><strong>Max Participants:</strong> @Model.Quest.Collaborative?.MaxNumParticipants</p>
-        <p><strong>Current Participants:</strong> @Model.Quest.Collaborative?.LearnerCollaborations.Count</p>
-    </div>
-    <div class="card-footer">
-        <form id="joinQuestForm" asp-action="ConfirmJoinQuest" method="post">
-            <input type="hidden" name="learnerId" value="@Model.LearnerId" />
-            <input type="hidden" name="questId" value="@Model.Quest.QuestId" />
-            <button type="submit" class="btn btn-primary">Confirm Join</button>
-            <a asp-action="AvailableQuests" asp-route-learnerId="@Model.LearnerId" class="btn btn-secondary">Cancel</a>
-        </form>
-    </div>
-</div>
-
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success mt-3">
-        @TempData["Message"]
-    </div>
-}
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger mt-3">
-        @TempData["ErrorMessage"]
-    </div>
-}
-
-<a asp-action="Home" class="btn btn-secondary mt-3">Back to Home</a>
+<form asp-action="ConfirmJoinQuest" asp-controller="Learners" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="LearnerId" />
+    <input type="hidden" asp-for="Quest.QuestId" />
+    <button type="submit" class="btn btn-success">Confirm Join Quest</button>
+</form>
+<a asp-action="AvailableQuests" asp-route-learnerId="@Model.LearnerId" class="btn btn-secondary">Back to Quests</a>

@@ -1,0 +1,29 @@
+﻿@model Course_station.Controllers.LearnersController.JoinQuestViewModel
+@{
+    ViewData["Title"] = "Confirm Join Quest";
+}
+
+<h2>Confirm Joining Quest</h2>
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<table class="table table-bordered">
+    <tr><th>Title</th><td>@Model.Quest.Title</td></tr>
+    <tr><th>Description</th><td>@Model.Quest.Description</td></tr>
+    <tr><th>Difficulty</th><td>@Model.Quest.DifficultyLevel</td></tr>
+    <tr><th>Criteria</th><td>@Model.Quest.Criteria</td></tr>
+</table>
+
+<form asp-action="ConfirmJoinQuest" asp-controller="Learners" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="LearnerId" />
+    <input type="hidden" asp-for="Quest.QuestId" />
+    <button type="submit" class="btn btn-primary">Confirm Join</button>
+    <a asp-action="AvailableQuests" asp-route-learnerId="@Model.LearnerId" class="btn btn-secondary">Cancel</a>
+</form>
