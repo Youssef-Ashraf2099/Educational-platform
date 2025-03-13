@@ -7,7 +7,8 @@ public partial class Collaborative
 {
     public int QuestId { get; set; }
 
-    public DateOnly? Deadline { get; set; }
+    public DateOnly? Deadline { get; set; }  
+    
 
     public int? MaxNumParticipants { get; set; }
 

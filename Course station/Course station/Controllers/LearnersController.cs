@@ -474,8 +474,8 @@ namespace Course_station.Controllers
                 return RedirectToAction("AvailableQuests", new { learnerId });
             }
 
-            var quest = await _context.Quests
-                .Include(q => q.Collaborative)
+            var quest = await _context.Quests ///to see the quests ID original
+                .Include(q => q.Collaborative) // this is the collbrative entity
                 .FirstOrDefaultAsync(q => q.QuestId == questId);
 
             if (quest == null)
@@ -498,7 +498,7 @@ namespace Course_station.Controllers
                 TempData["ErrorMessage"] = "Quest is full.";
                 return RedirectToAction("AvailableQuests", new { learnerId });
             }
-
+            
             var collaboration = new LearnerCollaboration
             {
                 LearnerId = learnerId,

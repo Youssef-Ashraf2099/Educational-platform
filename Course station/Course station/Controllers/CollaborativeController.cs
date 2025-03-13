@@ -30,20 +30,21 @@ namespace Course_station.Controllers
                 return NotFound();
             }
 
-            var collaborative = await _context.Collaboratives
+            var Collaboratives = await _context.Collaboratives
                 .Include(c => c.Quest)
                 .FirstOrDefaultAsync(m => m.QuestId == id);
-            if (collaborative == null)
+            if (Collaboratives == null)
             {
                 return NotFound();
             }
 
-            return View(collaborative);
+            return View(Collaboratives);
         }
 
         // GET: Collaborative/Create
-        public IActionResult Create()
+        public IActionResult Create(int questId)
         {
+            ViewBag.QuestId = questId;
             return View();
         }
 
