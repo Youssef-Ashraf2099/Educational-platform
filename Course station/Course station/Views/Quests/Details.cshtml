@@ -38,12 +38,6 @@
                 <dt class="col-sm-3">Criteria</dt>
                 <dd class="col-sm-9">@Model.Criteria</dd>
 
-                @* @if (!string.IsNullOrEmpty(Model.SkillMastery)) *@
-                @* { *@
-                @*     <dt class="col-sm-3">Skill Mastery</dt> *@
-                @*     <dd class="col-sm-9">@Model.SkillMastery</dd> *@
-                @* } *@
-
                 @if (deadline.HasValue)
                 {
                     <dt class="col-sm-3">Deadline</dt>
@@ -58,6 +52,11 @@
                     <dt class="col-sm-3">Maximum Participants</dt>
                     <dd class="col-sm-9">@Model.Collaborative.MaxNumParticipants</dd>
                 }
+                else
+                {
+                    <dt class="col-sm-3">Collaborative Quest</dt>
+                    <dd class="col-sm-9">No</dd>
+                }
             </dl>
         </div>
         <div class="card-footer">
@@ -69,7 +68,7 @@
                     <button type="submit" class="btn btn-success">Join Quest</button>
                 </form>
             }
-            
+
             <a asp-action="Participants" asp-route-id="@Model.QuestId" class="btn btn-info mt-2">View Participants</a>
             <a asp-action="Index" class="btn btn-secondary mt-2">Back to List</a>
         </div>

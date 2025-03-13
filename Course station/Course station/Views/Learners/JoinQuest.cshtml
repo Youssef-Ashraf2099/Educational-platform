@@ -10,8 +10,8 @@
 
 <form asp-action="ConfirmJoinQuest" asp-controller="Learners" method="post">
     @Html.AntiForgeryToken()
-    <input type="hidden" asp-for="LearnerId" />
-    <input type="hidden" asp-for="Quest.QuestId" />
+    <input type="hidden" name="learnerId" value="@Model.LearnerId" />
+    <input type="hidden" name="questId" value="@Model.Quest.QuestId" />
     <button type="submit" class="btn btn-success">Confirm Join Quest</button>
 </form>
 <a asp-action="AvailableQuests" asp-route-learnerId="@Model.LearnerId" class="btn btn-secondary">Back to Quests</a>
