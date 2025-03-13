@@ -121,26 +121,39 @@ namespace Course_station.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateQuestProgress([FromBody] UpdateQuestProgressModel model)
+        [Route("Learners/QuestProgress/{learnerId}")]
+        public async Task<IActionResult> QuestProgress(int learnerId)
         {
-            var learnerCollaboration = new LearnerCollaboration
-            {
-                LearnerId = model.LearnerId,
-                QuestId = model.QuestId
-            };
+            var quests = await _context.LearnerQuests
+                .Where(lq => lq.LearnerId == learnerId)
+                .Select(lq => lq.Quest)
+                .ToListAsync();
 
-            _context.LearnerCollaborations.Add(learnerCollaboration);
-            await _context.SaveChangesAsync();
-
-            return Json(new { success = true });
+            return View(quests);
         }
 
-        public class UpdateQuestProgressModel
-        {
-            public int LearnerId { get; set; }
-            public int QuestId { get; set; }
-        }
+
+
+        //[HttpPost]
+        //public async Task<IActionResult> UpdateQuestProgress([FromBody] UpdateQuestProgressModel model)
+        //{
+        //    var learnerCollaboration = new LearnerCollaboration
+        //    {
+        //        LearnerId = model.LearnerId,
+        //        QuestId = model.QuestId
+        //    };
+
+        //    _context.LearnerCollaborations.Add(learnerCollaboration);
+        //    await _context.SaveChangesAsync();
+
+        //    return Json(new { success = true });
+        //}
+
+        //public class UpdateQuestProgressModel
+        //{
+        //    public int LearnerId { get; set; }
+        //    public int QuestId { get; set; }
+        //}
 
 
         public class AvailableQuestsViewModel
@@ -185,76 +198,8 @@ namespace Course_station.Controllers
             public Quest Quest { get; set; }
         }
 
-        //public async Task<IActionResult> QuestProgress(int learnerId)
-        //{
-        //    var quests = await _context.LearnerCollaborations   masder el 2aref ahoooooooooooooooooooo
-        //        .Where(lc => lc.LearnerId == learnerId)
-        //        .Select(lc => lc.Quest)
-        //        .ToListAsync();
-
-        //    return View(quests);
-        //}
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> ConfirmJoinQuest(int learnerId, int questId)
-        //{
-        //    // Check if the learner has already joined the quest
-        //    var existingCollaboration = await _context.LearnerCollaborations
-        //        .FirstOrDefaultAsync(lc => lc.LearnerId == learnerId && lc.QuestId == questId);
-
-        //    if (existingCollaboration != null)
-        //    {
-        //        TempData["ErrorMessage"] = "You have already joined this quest.";
-        //        return RedirectToAction(nameof(AvailableQuests), new { learnerId });
-        //    }
-
-        //    var quest = await _context.Quests
-        //        .Include(q => q.Collaborative)
-        //        .FirstOrDefaultAsync(q => q.QuestId == questId);
-
-        //    if (quest == null || quest.Collaborative == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    // Check if the quest has reached the maximum number of participants
-        //    var participantCount = await _context.LearnerCollaborations
-        //        .CountAsync(lc => lc.QuestId == questId);
-
-        //    if (participantCount >= quest.Collaborative.MaxNumParticipants)
-        //    {
-        //        TempData["ErrorMessage"] = "Quest is full.";
-        //        return RedirectToAction(nameof(AvailableQuests), new { learnerId });
-        //    }
-
-        //    var learnerCollaboration = new LearnerCollaboration
-        //    {
-        //        QuestId = questId,
-        //        LearnerId = learnerId
-        //    };
-
-        //    _context.LearnerCollaborations.Add(learnerCollaboration);
-        //    await _context.SaveChangesAsync();
-
-        //    var achievement = new Achievement
-        //    {
-        //        Description = "Joined a Collaborative Quest",
-        //        DateEarned = DateOnly.FromDateTime(DateTime.Now),
-        //        BadgeId = 1,
-        //        LearnerId = learnerId
-        //    };
-
-        //    var learner = await _context.Learners.FindAsync(learnerId);
-        //    if (learner != null)
-        //    {
-        //        learner.Achievements.Add(achievement);
-        //        await _context.SaveChangesAsync();
-        //    }
-
-        //    TempData["Message"] = "Successfully joined the quest!";
-        //    return RedirectToAction(nameof(AvailableQuests), new { learnerId });
-        //}
-
+       
+        
         public async Task<IActionResult> JoinQuest(int learnerId, int questId)
         {
             var quest = await _context.Quests
@@ -864,11 +809,7 @@ namespace Course_station.Controllers
         }
 
 
-        public IActionResult QuestProgress()
-        {
-            var quests = _context.Quests.ToList(); // Ensure this is a list of Quest objects
-            return View(quests);
-        }
+       
         // Join a collaborative quest
         [HttpPost]
         [ValidateAntiForgeryToken]
