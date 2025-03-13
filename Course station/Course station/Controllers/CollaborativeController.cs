@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Course_station.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Course_station.Controllers
 {
@@ -30,31 +31,29 @@ namespace Course_station.Controllers
                 return NotFound();
             }
 
-            var Collaboratives = await _context.Collaboratives
+            var collaboratives = await _context.Collaboratives
                 .Include(c => c.Quest)
                 .FirstOrDefaultAsync(m => m.QuestId == id);
-            if (Collaboratives == null)
+            if (collaboratives == null)
             {
                 return NotFound();
             }
 
-            return View(Collaboratives);
+            return View(collaboratives);
         }
 
         // GET: Collaborative/Create
-        public IActionResult Create(int questId)
+        public async Task<IActionResult> Create()
         {
-            ViewBag.QuestId = questId;
+            ViewBag.Quests = new SelectList(await _context.Quests.ToListAsync(), "QuestId", "Title");
             return View();
         }
 
         // POST: Collaborative/Create
-        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("QuestId,Deadline,MaxNumParticipants")] Collaborative collaborative)
         {
-            // this doesn't save quest but saves collaborative only 
             if (!ModelState.IsValid)
             {
                 // Log ModelState errors to console
@@ -62,6 +61,7 @@ namespace Course_station.Controllers
                 {
                     Console.WriteLine(error.ErrorMessage);
                 }
+                ViewBag.Quests = new SelectList(await _context.Quests.ToListAsync(), "QuestId", "Title", collaborative.QuestId);
                 return View(collaborative);
             }
 
@@ -69,6 +69,7 @@ namespace Course_station.Controllers
             if (quest == null)
             {
                 ModelState.AddModelError("QuestId", "Invalid Quest ID");
+                ViewBag.Quests = new SelectList(await _context.Quests.ToListAsync(), "QuestId", "Title", collaborative.QuestId);
                 return View(collaborative);
             }
 
@@ -76,7 +77,6 @@ namespace Course_station.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
 
         // GET: Collaborative/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -91,6 +91,7 @@ namespace Course_station.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Quests = new SelectList(await _context.Quests.ToListAsync(), "QuestId", "Title", collaborative.QuestId);
             return View(collaborative);
         }
 
@@ -124,6 +125,7 @@ namespace Course_station.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Quests = new SelectList(await _context.Quests.ToListAsync(), "QuestId", "Title", collaborative.QuestId);
             return View(collaborative);
         }
 
