@@ -121,77 +121,7 @@ namespace Course_station.Controllers
 
 
 
-        //private bool CanDeleteQuest(Quest quest)
-        //{
-
-        //    return quest.Collaborative == null || !quest.Collaborative.LearnerCollaborations.Any();
-        //}
-        //private bool IsUserInstructorOrAdmin()
-        //{
-        //    return User.IsInRole("Instructor") || User.IsInRole("Admin");
-        //}
-        //// GET: Quests/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (!IsUserInstructorOrAdmin())
-        //    {
-        //        return Forbid();
-        //    }
-
-        //    var quest = await _context.Quests
-        //        .Include(q => q.Collaborative)
-        //        .ThenInclude(c => c.LearnerCollaborations)
-        //        .FirstOrDefaultAsync(m => m.QuestId == id);
-        //    if (quest == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (!CanDeleteQuest(quest))
-        //    {
-        //        TempData["ErrorMessage"] = "Quest cannot be deleted based on the specified criteria.";
-        //        return RedirectToAction(nameof(Details), new { id = quest.QuestId });
-        //    }
-
-        //    return View(quest);
-        //}
-
-        // POST: Quests/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    if (!IsUserInstructorOrAdmin())
-        //    {
-        //        return Forbid();
-        //    }
-
-        //    var quest = await _context.Quests
-        //        .Include(q => q.Collaborative)
-        //        .ThenInclude(c => c.LearnerCollaborations)
-        //        .FirstOrDefaultAsync(m => m.QuestId == id);
-        //    if (quest == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (!CanDeleteQuest(quest))
-        //    {
-        //        TempData["ErrorMessage"] = "Quest cannot be deleted based on the specified criteria.";
-        //        return RedirectToAction(nameof(Details), new { id = quest.QuestId });
-        //    }
-
-        //    _context.Quests.Remove(quest);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-
+        
 
 
 
@@ -234,6 +164,9 @@ namespace Course_station.Controllers
         {
             return _context.Quests.Any(e => e.QuestId == id);
         }
+
+
+
 
         // POST: Quests/Join
         [HttpPost]

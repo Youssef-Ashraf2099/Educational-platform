@@ -13,8 +13,8 @@
     <div class="card-body">
         <p><strong>Description:</strong> @Model.Quest.Description</p>
         <p><strong>Difficulty Level:</strong> @Model.Quest.DifficultyLevel</p>
-        <p><strong>Collaborative:</strong> @(Model.Quest.Collaborative != null ? "Yes" : "No")</p>
-        <p><strong>Max Participants:</strong> @Model.Quest.Collaborative?.MaxNumParticipants</p>
+        @* <p><strong>Collaborative:</strong> @(Model.Quest.Collaborative != null ? "Yes" : "No")</p> *@
+        @* <p><strong>Max Participants:</strong> @Model.Quest.Collaborative?.MaxNumParticipants</p> *@
     </div>
     <div class="card-footer">
         <form id="joinQuestForm" asp-action="JoinQuest" method="post" onsubmit="return handleFormSubmit(event)">
