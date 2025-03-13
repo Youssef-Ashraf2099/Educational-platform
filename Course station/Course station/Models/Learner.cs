@@ -54,4 +54,6 @@ public partial class Learner
     public virtual ICollection<LearningGoal> Goals { get; set; } = new List<LearningGoal>();
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+    public virtual ICollection<LearnerQuest> LearnerQuests { get; set; } = new List<LearnerQuest>();
+
 }

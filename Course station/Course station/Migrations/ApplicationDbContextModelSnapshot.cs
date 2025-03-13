@@ -651,9 +651,6 @@ namespace Course_station.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("password");
 
-                    b.Property<string>("PhotoPath")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("LearnerId")
                         .HasName("PK__Learner__3DE277FFC2D73E94");
 
@@ -733,6 +730,29 @@ namespace Course_station.Migrations
                     b.HasIndex("QuestId");
 
                     b.ToTable("LearnerMastery", (string)null);
+                });
+
+            modelBuilder.Entity("Course_station.Models.LearnerQuest", b =>
+                {
+                    b.Property<int>("LearnerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuestId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("AssignedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Status")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("LearnerId", "QuestId");
+
+                    b.HasIndex("QuestId");
+
+                    b.ToTable("LearnerQuest", (string)null);
                 });
 
             modelBuilder.Entity("Course_station.Models.LearningActivity", b =>
@@ -1613,6 +1633,27 @@ namespace Course_station.Migrations
                     b.Navigation("Quest");
                 });
 
+            modelBuilder.Entity("Course_station.Models.LearnerQuest", b =>
+                {
+                    b.HasOne("Course_station.Models.Learner", "Learner")
+                        .WithMany("LearnerQuests")
+                        .HasForeignKey("LearnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_LearnerQuest_Learner");
+
+                    b.HasOne("Course_station.Models.Quest", "Quest")
+                        .WithMany("LearnerQuests")
+                        .HasForeignKey("QuestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_LearnerQuest_Quest");
+
+                    b.Navigation("Learner");
+
+                    b.Navigation("Quest");
+                });
+
             modelBuilder.Entity("Course_station.Models.LearningActivity", b =>
                 {
                     b.HasOne("Course_station.Models.Module", "Module")
@@ -1960,6 +2001,8 @@ namespace Course_station.Migrations
 
                     b.Navigation("LearnerMasteries");
 
+                    b.Navigation("LearnerQuests");
+
                     b.Navigation("LearningPrefrences");
 
                     b.Navigation("PersonalProfiles");
@@ -2010,6 +2053,8 @@ namespace Course_station.Migrations
             modelBuilder.Entity("Course_station.Models.Quest", b =>
                 {
                     b.Navigation("Collaborative");
+
+                    b.Navigation("LearnerQuests");
 
                     b.Navigation("QuestRewards");
 
