@@ -4,12 +4,11 @@
     ViewData["Title"] = "Assessments";
 }
 
+<div class="header">
+    <h2>@ViewData["Title"]</h2>
+</div>
+<hr />
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Assessments</h2>
-        
-    </div>
-
     <div class="table-responsive">
         <table class="table table-hover">
             <thead class="thead-light">
@@ -86,36 +85,119 @@
     </div>
 </div>
 
-@section Styles {
-    <style>
-        .assessment-stats {
-            display: flex;
-            gap: 0.5rem;
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    .header {
+        background-image: url('/images/header-bg.jpg');
+        background-size: cover;
+        background-position: center;
+        color: black;
+        padding: 60px 0;
+        text-align: center;
+    }
+
+        .header h2 {
+            margin: 0;
+            font-size: 2.5rem;
         }
 
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            padding: 0.5rem;
-        }
+    .container {
+        max-width: 1000px;
+        margin: auto;
+        padding: 20px;
+    }
 
-        .btn-group {
-            display: flex;
-            gap: 0.25rem;
-        }
+    .table-responsive {
+        margin-top: 20px;
+    }
 
-            .btn-group .btn {
-                padding: 0.25rem 0.5rem;
-            }
+    .table {
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+    }
 
-        .table td {
+        .table th, .table td {
             vertical-align: middle;
         }
 
-        .thead-light th {
-            background-color: #f8f9fa;
-            border-color: #dee2e6;
+    .thead-light th {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+    .assessment-stats {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.5rem;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 0.25rem;
+    }
+
+        .btn-group .btn {
+            padding: 0.25rem 0.5rem;
+            transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
         }
-    </style>
-}
+
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: white;
+    }
+
+        .btn-info:hover {
+            background-color: #138496;
+            border-color: #117a8b;
+            transform: scale(1.05);
+        }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+            transform: scale(1.05);
+        }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: white;
+    }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+            transform: scale(1.05);
+        }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            transform: scale(1.05);
+        }
+</style>
