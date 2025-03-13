@@ -147,18 +147,32 @@ namespace Course_station.Controllers
         {
             public int LearnerId { get; set; }
             public List<Quest> Quests { get; set; }
-        }
+            public List<int> JoinedQuestIds { get; set; } = new List<int>();
 
+            public bool HasJoinedQuest(int questId)
+            {
+                return JoinedQuestIds.Contains(questId);
+            }
+        }
         public async Task<IActionResult> AvailableQuests(int learnerId)
         {
+            // Get all quests
             var quests = await _context.Quests
                 .Include(q => q.Collaborative)
                 .ToListAsync();
 
+            // Get the quests the learner has already joined
+            var joinedQuestIds = await _context.LearnerCollaborations
+                .Where(lc => lc.LearnerId == learnerId)
+                .Select(lc => lc.QuestId)
+                .ToListAsync();
+
+            // Add a property to the view model to indicate if the learner has joined each quest
             var viewModel = new AvailableQuestsViewModel
             {
                 LearnerId = learnerId,
-                Quests = quests
+                Quests = quests,
+                JoinedQuestIds = joinedQuestIds
             };
 
             return View(viewModel);
@@ -201,10 +215,26 @@ namespace Course_station.Controllers
             return View(viewModel);
         }
 
+        private async Task<bool> HasLearnerJoinedQuest(int learnerId, int questId)
+        {
+            return await _context.LearnerCollaborations
+                .AnyAsync(lc => lc.LearnerId == learnerId && lc.QuestId == questId);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmJoinQuest(int learnerId, int questId)
         {
+            // Check if the learner has already joined the quest
+            var existingCollaboration = await _context.LearnerCollaborations
+                .FirstOrDefaultAsync(lc => lc.LearnerId == learnerId && lc.QuestId == questId);
+
+            if (existingCollaboration != null)
+            {
+                TempData["ErrorMessage"] = "You have already joined this quest.";
+                return RedirectToAction(nameof(AvailableQuests), new { learnerId });
+            }
+
             var quest = await _context.Quests
                 .Include(q => q.Collaborative)
                 .FirstOrDefaultAsync(q => q.QuestId == questId);
@@ -214,18 +244,14 @@ namespace Course_station.Controllers
                 return NotFound();
             }
 
-            if (quest.Collaborative.LearnerCollaborations.Count >= quest.Collaborative.MaxNumParticipants)
+            // Check if the quest has reached the maximum number of participants
+            // We need to load the actual count from the database
+            var participantCount = await _context.LearnerCollaborations
+                .CountAsync(lc => lc.QuestId == questId);
+
+            if (participantCount >= quest.Collaborative.MaxNumParticipants)
             {
                 TempData["ErrorMessage"] = "Quest is full.";
-                return RedirectToAction(nameof(AvailableQuests), new { learnerId });
-            }
-
-            var existingCollaboration = await _context.LearnerCollaborations
-                .FirstOrDefaultAsync(lc => lc.LearnerId == learnerId && lc.QuestId == questId);
-
-            if (existingCollaboration != null)
-            {
-                TempData["ErrorMessage"] = "You have already joined this quest.";
                 return RedirectToAction(nameof(AvailableQuests), new { learnerId });
             }
 

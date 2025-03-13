@@ -1,0 +1,81 @@
+﻿@model Course_station.Models.Quest
+
+@{
+    ViewData["Title"] = "Quest Participants";
+}
+
+<div class="container mt-4">
+    <h1>Participants for @Model.Title</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Quest Information</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Title</dt>
+                <dd class="col-sm-9">@Model.Title</dd>
+
+                <dt class="col-sm-3">Description</dt>
+                <dd class="col-sm-9">@Model.Description</dd>
+
+                <dt class="col-sm-3">Maximum Participants</dt>
+                <dd class="col-sm-9">@Model.Collaborative?.MaxNumParticipants</dd>
+
+                <dt class="col-sm-3">Current Participants</dt>
+                <dd class="col-sm-9">@(Model.Collaborative?.LearnerCollaborations?.Count ?? 0)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Participants</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Collaborative?.LearnerCollaborations?.Any() == true)
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Learner ID</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Date Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var collaboration in Model.Collaborative.LearnerCollaborations)
+                        {
+                            <tr>
+                                <td>@collaboration.LearnerId</td>
+                                <td>@($"{collaboration.Learner?.FirstName} {collaboration.Learner?.LastName}")</td>
+                                <td>
+                                    @if (string.IsNullOrEmpty(collaboration.CompletionStatus))
+                                    {
+                                        <span class="badge bg-warning">In Progress</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">@collaboration.CompletionStatus</span>
+                                    }
+                                </td>
+                               
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    No participants have joined this quest yet.
+                </div>
+            }
+        </div>
+        <div class="card-footer">
+            <a asp-action="Details" asp-route-id="@Model.QuestId" class="btn btn-primary">Back to Quest Details</a>
+            <a asp-action="Index" class="btn btn-secondary">Back to Quests</a>
+        </div>
+    </div>
+</div>

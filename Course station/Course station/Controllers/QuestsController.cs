@@ -166,7 +166,11 @@ namespace Course_station.Controllers
         }
 
 
-
+        private async Task<bool> HasLearnerJoinedQuest(int learnerId, int questId)
+        {
+            return await _context.LearnerCollaborations
+                .AnyAsync(lc => lc.LearnerId == learnerId && lc.QuestId == questId);
+        }
 
         // POST: Quests/Join
         [HttpPost]
