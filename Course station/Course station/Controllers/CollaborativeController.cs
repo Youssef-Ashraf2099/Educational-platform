@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Course_station.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Course_station.Controllers
 {
@@ -44,6 +45,7 @@ namespace Course_station.Controllers
         // GET: Collaborative/Create
         public IActionResult Create()
         {
+            ViewData["QuestId"] = new SelectList(_context.Quests, "QuestId", "QuestName");
             return View();
         }
 
@@ -58,6 +60,7 @@ namespace Course_station.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["QuestId"] = new SelectList(_context.Quests, "QuestId", "QuestName", collaborative.QuestId);
             return View(collaborative);
         }
 
@@ -74,6 +77,7 @@ namespace Course_station.Controllers
             {
                 return NotFound();
             }
+            ViewData["QuestId"] = new SelectList(_context.Quests, "QuestId", "QuestName", collaborative.QuestId);
             return View(collaborative);
         }
 
@@ -107,6 +111,7 @@ namespace Course_station.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["QuestId"] = new SelectList(_context.Quests, "QuestId", "QuestName", collaborative.QuestId);
             return View(collaborative);
         }
 
@@ -161,6 +166,5 @@ namespace Course_station.Controllers
         {
             return _context.Collaboratives.Any(e => e.QuestId == id);
         }
-
     }
 }

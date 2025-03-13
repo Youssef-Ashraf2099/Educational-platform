@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Course_station.Models.Collaborative>
+@{
+    ViewData["Title"] = "Collaboratives";
+}
+<body>
+    <h1>Collaboratives</h1>
+
+    <p>
+        <a asp-page="./Create" class="btn btn-primary">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().QuestId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Deadline)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().MaxNumParticipants)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.QuestId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Deadline)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MaxNumParticipants)
+                    </td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.QuestId" class="btn btn-warning">Edit</a> |
+                        <a asp-page="./Details" asp-route-id="@item.QuestId" class="btn btn-info">Details</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.QuestId" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
