@@ -1,0 +1,35 @@
+@model Course_station.Models.Collaborative
+
+@{
+    ViewData["Title"] = "Create Collaborative Quest";
+}
+
+<h1 class="text-center">Create Collaborative Quest</h1>
+
+<div class="d-flex justify-content-center">
+    <form asp-action="Create" method="post" class="w-50 shadow p-3 mb-5 bg-white rounded-lg">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="QuestId" class="control-label"></label>
+            <input asp-for="QuestId" class="form-control" />
+            <span asp-validation-for="QuestId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="MaxNumParticipants" class="control-label"></label>
+            <input asp-for="MaxNumParticipants" class="form-control" />
+            <span asp-validation-for="MaxNumParticipants" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Deadline" class="control-label"></label>
+            <input asp-for="Deadline" class="form-control" type="date" />
+            <span asp-validation-for="Deadline" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+<div class="text-center">
+    <a asp-action="Index">Back to List</a>
+</div>

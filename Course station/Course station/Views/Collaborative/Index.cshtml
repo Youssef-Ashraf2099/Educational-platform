@@ -1,0 +1,61 @@
+@model IEnumerable<Course_station.Models.Collaborative>
+
+@{
+    ViewData["Title"] = "Collaborative Quests";
+}
+
+<h1 class="text-center">Collaborative Quests</h1>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Quest.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Quest.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Quest.DifficultyLevel)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MaxNumParticipants)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Deadline)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quest.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quest.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quest.DifficultyLevel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaxNumParticipants)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Deadline)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.QuestId" class="btn btn-primary">Edit</a>
+                <a asp-action="Details" asp-route-id="@item.QuestId" class="btn btn-info">Details</a>
+                <a asp-action="Delete" asp-route-id="@item.QuestId" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div class="text-center">
+    <a asp-action="Create" class="btn btn-success">Create New Collaborative Quest</a>
+</div>
