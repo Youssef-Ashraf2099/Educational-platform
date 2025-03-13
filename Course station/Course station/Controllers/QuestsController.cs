@@ -173,6 +173,16 @@ namespace Course_station.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Join(int questId, int learnerId)
         {
+            // Check if the learner has already joined the quest
+            var existingCollaboration = await _context.LearnerCollaborations
+                .FirstOrDefaultAsync(lc => lc.LearnerId == learnerId && lc.QuestId == questId);
+
+            if (existingCollaboration != null)
+            {
+                TempData["ErrorMessage"] = "You have already joined this quest.";
+                return RedirectToAction(nameof(Details), new { id = questId });
+            }
+
             // Retrieve the quest from the database, including its collaborative details
             var quest = await _context.Quests
                 .Include(q => q.Collaborative)
