@@ -49,18 +49,34 @@ namespace Course_station.Controllers
         }
 
         // POST: Collaborative/Create
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("QuestId,Deadline,MaxNumParticipants")] Collaborative collaborative)
         {
-            if (ModelState.IsValid)
+            // this doesn't save quest but saves collaborative only 
+            if (!ModelState.IsValid)
             {
-                _context.Add(collaborative);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                // Log ModelState errors to console
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
+                return View(collaborative);
             }
-            return View(collaborative);
+
+            var quest = await _context.Quests.FindAsync(collaborative.QuestId);
+            if (quest == null)
+            {
+                ModelState.AddModelError("QuestId", "Invalid Quest ID");
+                return View(collaborative);
+            }
+
+            _context.Add(collaborative);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
+
 
         // GET: Collaborative/Edit/5
         public async Task<IActionResult> Edit(int? id)
