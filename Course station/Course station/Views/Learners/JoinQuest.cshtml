@@ -4,14 +4,60 @@
 }
 
 <h2>Join Quest: @Model.Quest.Title</h2>
-<p><strong>Description:</strong> @Model.Quest.Description</p>
-<p><strong>Difficulty:</strong> @Model.Quest.DifficultyLevel</p>
-<p><strong>Criteria:</strong> @Model.Quest.Criteria</p>
 
-<form asp-action="ConfirmJoinQuest" asp-controller="Learners" method="post">
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="learnerId" value="@Model.LearnerId" />
-    <input type="hidden" name="questId" value="@Model.Quest.QuestId" />
-    <button type="submit" class="btn btn-success">Confirm Join Quest</button>
-</form>
-<a asp-action="AvailableQuests" asp-route-learnerId="@Model.LearnerId" class="btn btn-secondary">Back to Quests</a>
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h4>Quest Details</h4>
+    </div>
+    <div class="card-body">
+        <p><strong>Description:</strong> @Model.Quest.Description</p>
+        <p><strong>Difficulty:</strong> @Model.Quest.DifficultyLevel</p>
+        <p><strong>Criteria:</strong> @Model.Quest.Criteria</p>
+    </div>
+</div>
+
+@if (Model.LearnerQuest?.Status == "Completed")
+{
+    <div class="alert alert-info">
+        <h4>Quest Completed</h4>
+        <p>You have already completed this quest.</p>
+        <a asp-action="QuestContent" asp-route-learnerId="@Model.LearnerId" asp-route-questId="@Model.Quest.QuestId" class="btn btn-primary">View Completed Quest</a>
+    </div>
+}
+else if (Model.LearnerQuest?.Status == "In Progress")
+{
+    <div class="alert alert-warning">
+        <h4>Quest In Progress</h4>
+        <p>This quest is currently in progress.</p>
+        <a asp-action="QuestContent" asp-route-learnerId="@Model.LearnerId" asp-route-questId="@Model.Quest.QuestId" class="btn btn-primary">Continue Quest</a>
+    </div>
+}
+else
+{
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Ready to Join?</h4>
+        </div>
+        <div class="card-body">
+            <p>Are you ready to begin this quest? Once you join, you'll be able to access the quest activities.</p>
+            <form asp-action="ConfirmJoinQuest" asp-controller="Learners" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="learnerId" value="@Model.LearnerId" />
+                <input type="hidden" name="questId" value="@Model.Quest.QuestId" />
+                <button type="submit" class="btn btn-success">Join Quest</button>
+                <a asp-action="AvailableQuests" asp-route-learnerId="@Model.LearnerId" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+}
+
+<a asp-action="AvailableQuests" asp-route-learnerId="@Model.LearnerId" class="btn btn-secondary mt-3">Back to Available Quests</a>
