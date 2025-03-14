@@ -20,10 +20,22 @@
     <tr><th>Criteria</th><td>@Model.Quest.Criteria</td></tr>
 </table>
 
-<form asp-action="ConfirmJoinQuest" asp-controller="Learners" method="post">
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="learnerId" value="@Model.LearnerId" />
-    <input type="hidden" name="questId" value="@Model.Quest.QuestId" />
-    <button type="submit" class="btn btn-primary">Confirm Join</button>
-    <a asp-action="AvailableQuests" asp-route-learnerId="@Model.LearnerId" class="btn btn-secondary">Cancel</a>
-</form>
+@if (Model.LearnerQuest?.Status == "Completed")
+{
+    <div class="alert alert-info">You have completed this quest.</div>
+}
+else if (Model.LearnerQuest?.Status == "In Progress")
+{
+    <div class="alert alert-warning">This quest is currently in progress.</div>
+    <a asp-action="QuestContent" asp-route-learnerId="@Model.LearnerId" asp-route-questId="@Model.Quest.QuestId" class="btn btn-primary">Continue Quest</a>
+}
+else
+{
+    <form asp-action="ConfirmJoinQuest" asp-controller="Learners" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="learnerId" value="@Model.LearnerId" />
+        <input type="hidden" name="questId" value="@Model.Quest.QuestId" />
+        <button type="submit" class="btn btn-primary">Confirm Join</button>
+        <a asp-action="AvailableQuests" asp-route-learnerId="@Model.LearnerId" class="btn btn-secondary">Cancel</a>
+    </form>
+}

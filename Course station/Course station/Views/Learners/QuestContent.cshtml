@@ -1,0 +1,112 @@
+﻿@model Course_station.Controllers.LearnersController.JoinQuestViewModel
+@{
+    ViewData["Title"] = "Quest Content";
+}
+
+<h2>Quest Content: @Model.Quest.Title</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h4>Quest Details</h4>
+    </div>
+    <div class="card-body">
+        <p><strong>Description:</strong> @Model.Quest.Description</p>
+        <p><strong>Difficulty:</strong> @Model.Quest.DifficultyLevel</p>
+        <p><strong>Criteria:</strong> @Model.Quest.Criteria</p>
+    </div>
+</div>
+
+@if (Model.LearnerQuest?.Status == "Completed")
+{
+    <div class="alert alert-info">
+        <h4>Quest Completed</h4>
+        <p>Congratulations! You have successfully completed this quest.</p>
+    </div>
+}
+else if (Model.LearnerQuest?.Status == "In Progress")
+{
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Quest Activities</h4>
+        </div>
+        <div class="card-body">
+            <p>Here you can interact with the quest content and complete the required activities:</p>
+
+            <!-- Simulated quest content - expand this with real quest activities -->
+            <div class="quest-activities mb-4">
+                <h5>Activity 1: Introduction</h5>
+                <p>Read through the quest objectives and understand what you need to accomplish.</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="activity1">
+                    <label class="form-check-label" for="activity1">Mark as done</label>
+                </div>
+
+                <h5 class="mt-3">Activity 2: Research</h5>
+                <p>Research the topic and gather necessary resources.</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="activity2">
+                    <label class="form-check-label" for="activity2">Mark as done</label>
+                </div>
+
+                <h5 class="mt-3">Activity 3: Implementation</h5>
+                <p>Apply what you've learned to solve the quest challenge.</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="activity3">
+                    <label class="form-check-label" for="activity3">Mark as done</label>
+                </div>
+            </div>
+
+            <form asp-action="CompleteQuest" asp-controller="Learners" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="learnerId" value="@Model.LearnerId" />
+                <input type="hidden" name="questId" value="@Model.Quest.QuestId" />
+                <button type="submit" class="btn btn-success btn-lg">Submit & Complete Quest</button>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        <p>You haven't joined this quest yet.</p>
+        <a asp-action="JoinQuest" asp-route-learnerId="@Model.LearnerId" asp-route-questId="@Model.Quest.QuestId" class="btn btn-primary">Join This Quest</a>
+    </div>
+}
+
+<a asp-action="AvailableQuests" asp-route-learnerId="@Model.LearnerId" class="btn btn-secondary mt-3">Back to Quests</a>
+
+@section Scripts {
+    <script>
+        // Simple script to enhance the interactive feel
+        $(document).ready(function() {
+            // Enable submit button only when all activities are checked
+            $('input[type="checkbox"]').change(function() {
+                var allChecked = true;
+                $('input[type="checkbox"]').each(function() {
+                    if (!$(this).is(':checked')) {
+                        allChecked = false;
+                        return false;
+                    }
+                });
+
+                if (allChecked) {
+                    $('button[type="submit"]').removeAttr('disabled');
+                } else {
+                    $('button[type="submit"]').attr('disabled', 'disabled');
+                }
+            });
+
+            // Initially disable submit button
+            $('button[type="submit"]').attr('disabled', 'disabled');
+        });
+    </script>
+}
