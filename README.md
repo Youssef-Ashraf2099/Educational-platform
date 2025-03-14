@@ -11,7 +11,7 @@ To run this project, you need to have ASP.NET 9 installed on your local machine.
 2. Create a new database named `CourseStation`.
 
 ### Step 3: Change Configuration Files
-1. Update the `appsettings.json` file in the `Course station/Course station/` directory with your local database server details:
+1. Update the `appsettings.json` file and `appsettingDevelopment.json` in the `Course station/Course station/` directory with your local database server details:
     ```json
     {
       "ConnectionStrings": {
