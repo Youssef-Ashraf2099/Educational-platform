@@ -134,26 +134,7 @@ namespace Course_station.Controllers
 
 
 
-        //[HttpPost]
-        //public async Task<IActionResult> UpdateQuestProgress([FromBody] UpdateQuestProgressModel model)
-        //{
-        //    var learnerCollaboration = new LearnerCollaboration
-        //    {
-        //        LearnerId = model.LearnerId,
-        //        QuestId = model.QuestId
-        //    };
-
-        //    _context.LearnerCollaborations.Add(learnerCollaboration);
-        //    await _context.SaveChangesAsync();
-
-        //    return Json(new { success = true });
-        //}
-
-        //public class UpdateQuestProgressModel
-        //{
-        //    public int LearnerId { get; set; }
-        //    public int QuestId { get; set; }
-        //}
+       
 
 
         public class AvailableQuestsViewModel
@@ -196,10 +177,38 @@ namespace Course_station.Controllers
         {
             public int LearnerId { get; set; }
             public Quest Quest { get; set; }
+            public LearnerQuest? LearnerQuest { get; set; } // Add this property
         }
 
-       
-        
+
+        public async Task<IActionResult> QuestContent(int learnerId, int questId)
+        {
+            var quest = await _context.Quests
+                .Include(q => q.LearnerQuests)
+                .FirstOrDefaultAsync(q => q.QuestId == questId);
+
+            if (quest == null)
+            {
+                return NotFound();
+            }
+
+            var learnerQuest = await _context.LearnerQuests
+                .FirstOrDefaultAsync(lq => lq.LearnerId == learnerId && lq.QuestId == questId);
+
+            var viewModel = new JoinQuestViewModel
+            {
+                LearnerId = learnerId,
+                Quest = quest,
+                LearnerQuest = learnerQuest
+            };
+
+            return View(viewModel);
+        }
+
+
+
+
+
         public async Task<IActionResult> JoinQuest(int learnerId, int questId)
         {
             var quest = await _context.Quests
@@ -220,69 +229,8 @@ namespace Course_station.Controllers
             return View(viewModel);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ProcessJoinQuest(int learnerId, int questId)
-        {
-            // Check if the learner has already joined the quest
-            var existingCollaboration = await _context.LearnerCollaborations
-                .FirstOrDefaultAsync(lc => lc.LearnerId == learnerId && lc.QuestId == questId);
-
-            if (existingCollaboration != null)
-            {
-                TempData["ErrorMessage"] = "You have already joined this quest.";
-                return RedirectToAction(nameof(AvailableQuests), new { learnerId });
-            }
-
-            var quest = await _context.Quests
-                .Include(q => q.Collaborative)
-                .FirstOrDefaultAsync(q => q.QuestId == questId);
-
-            if (quest == null || quest.Collaborative == null)
-            {
-                return NotFound();
-            }
-
-            // Check if the quest has reached the maximum number of participants
-            var participantCount = await _context.LearnerCollaborations
-                .CountAsync(lc => lc.QuestId == questId);
-
-            if (participantCount >= quest.Collaborative.MaxNumParticipants)
-            {
-                TempData["ErrorMessage"] = "Quest is full.";
-                return RedirectToAction(nameof(AvailableQuests), new { learnerId });
-            }
-
-            var learnerCollaboration = new LearnerCollaboration
-            {
-                QuestId = questId,
-                LearnerId = learnerId
-            };
-
-            _context.LearnerCollaborations.Add(learnerCollaboration);
-            await _context.SaveChangesAsync();
-
-            var achievement = new Achievement
-            {
-                Description = "Joined a Collaborative Quest",
-                DateEarned = DateOnly.FromDateTime(DateTime.Now),
-                BadgeId = 1,
-                LearnerId = learnerId
-            };
-
-            var learner = await _context.Learners.FindAsync(learnerId);
-            if (learner != null)
-            {
-                learner.Achievements.Add(achievement);
-                await _context.SaveChangesAsync();
-            }
-
-            TempData["Message"] = "Successfully joined the quest!";
-            return RedirectToAction(nameof(AvailableQuests), new { learnerId });
-        }
 
 
-        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmJoinQuest(int learnerId, int questId)
@@ -290,8 +238,8 @@ namespace Course_station.Controllers
             // Check if learner already joined
             if (await HasLearnerJoinedQuest(learnerId, questId))
             {
-                TempData["ErrorMessage"] = "You have already joined this quest.";
-                return RedirectToAction("AvailableQuests", new { learnerId });
+                // If already joined, redirect to QuestContent instead of showing error
+                return RedirectToAction("QuestContent", new { learnerId, questId });
             }
 
             var quest = await _context.Quests
@@ -304,31 +252,43 @@ namespace Course_station.Controllers
                 return RedirectToAction("AvailableQuests", new { learnerId });
             }
 
-            // Check if the LearnerQuest entity already exists
-            var existingLearnerQuest = await _context.LearnerQuests
-                .FirstOrDefaultAsync(lq => lq.LearnerId == learnerId && lq.QuestId == questId);
-
-            if (existingLearnerQuest != null)
-            {
-                TempData["ErrorMessage"] = "You have already joined this quest.";
-                return RedirectToAction("AvailableQuests", new { learnerId });
-            }
-
             // Create a new LearnerQuest entry
             var learnerQuest = new LearnerQuest
             {
                 LearnerId = learnerId,
                 QuestId = questId,
                 AssignedDate = DateTime.Now,
-                Status = "In Progress" // Ensure this value meets the CHECK constraint "Completed', 'In Progress', 'Not Started"
+                Status = "In Progress" // Ensure this value meets the CHECK constraint
             };
 
             _context.LearnerQuests.Add(learnerQuest);
-
             await _context.SaveChangesAsync();
 
-            TempData["Message"] = "Successfully joined the quest!";
-            return RedirectToAction("AvailableQuests", new { learnerId });
+            TempData["Message"] = "Successfully joined the quest! You can now begin the quest.";
+            return RedirectToAction("QuestContent", new { learnerId, questId });
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CompleteQuest(int learnerId, int questId)
+        {
+            var learnerQuest = await _context.LearnerQuests
+                .FirstOrDefaultAsync(lq => lq.LearnerId == learnerId && lq.QuestId == questId);
+
+            if (learnerQuest == null)
+            {
+                TempData["ErrorMessage"] = "Quest not found or you haven't joined this quest.";
+                return RedirectToAction("QuestContent", new { learnerId, questId });
+            }
+
+            // Update the status to Completed
+            learnerQuest.Status = "Completed";
+            learnerQuest.AssignedDate = DateTime.Now; // Add this if you have a CompletionDate field
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Congratulations! Quest completed successfully!";
+            return RedirectToAction("QuestContent", new { learnerId, questId });
         }
 
 
