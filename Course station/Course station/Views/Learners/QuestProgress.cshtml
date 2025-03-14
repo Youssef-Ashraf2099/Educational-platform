@@ -44,7 +44,7 @@
                             <a asp-action="QuestContent" asp-route-learnerId="@ViewBag.LearnerId" asp-route-questId="@learnerQuest.QuestId" class="btn btn-primary btn-sm">View</a>
                             @if (learnerQuest.Status != "Completed")
                             {
-                                <a asp-action="CompleteQuest" asp-route-learnerId="@ViewBag.LearnerId" asp-route-questId="@learnerQuest.QuestId" class="btn btn-success btn-sm">Complete</a>
+                                <a asp-action="JoinQuest" asp-route-learnerId="@ViewBag.LearnerId" asp-route-questId="@learnerQuest.QuestId" class="btn btn-success btn-sm">Join</a>
                             }
                         </td>
                     </tr>
