@@ -56,3 +56,10 @@ dotnet build
 
 dotnet run
  ```
+## in case if you want to update any model
+
+```
+dotnet ef migrations add <MigrationName>
+ # Make sure to replace the `<MigrationName>` placeholder with a meaningful name when you run the command or according to the file you are updating.
+dotnet ef database update
+```
