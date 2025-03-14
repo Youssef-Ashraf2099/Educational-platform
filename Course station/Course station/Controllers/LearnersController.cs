@@ -124,17 +124,21 @@ namespace Course_station.Controllers
         [Route("Learners/QuestProgress/{learnerId}")]
         public async Task<IActionResult> QuestProgress(int learnerId)
         {
-            var quests = await _context.LearnerQuests
+            var learnerQuests = await _context.LearnerQuests
                 .Where(lq => lq.LearnerId == learnerId)
-                .Select(lq => lq.Quest)
+                .Include(lq => lq.Quest)
                 .ToListAsync();
 
-            return View(quests);
+            ViewBag.LearnerId = learnerId; // Pass LearnerId to the view
+
+            return View(learnerQuests);
         }
 
 
 
-       
+
+
+
 
 
         public class AvailableQuestsViewModel
