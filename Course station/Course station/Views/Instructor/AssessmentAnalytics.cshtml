@@ -4,58 +4,68 @@
     ViewData["Title"] = "Assessment Analytics";
 }
 
-<h2>Assessment Analytics</h2>
+<h2 class="text-center my-4">@ViewData["Title"]</h2>
 
 @if (!Model.Any())
 {
-    <p>No data available.</p>
+    <div class="alert alert-warning text-center" role="alert">
+        No data available.
+    </div>
 }
-
-@foreach (var item in Model)
+else
 {
-    <div>
-        <h4>@item.Assessment.Title</h4>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-2">Description</dt>
-            <dd class="col-sm-10">@item.Assessment.Description</dd>
-            <dt class="col-sm-2">Total Marks</dt>
-            <dd class="col-sm-10">@item.Assessment.TotalMarks</dd>
-            <dt class="col-sm-2">Passing Marks</dt>
-            <dd class="col-sm-10">@item.Assessment.PassingMarks</dd>
-        </dl>
-    </div>
+    @foreach (var item in Model)
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">@item.Assessment.Title</h4>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Description</dt>
+                    <dd class="col-sm-9">@item.Assessment.Description</dd>
+                    <dt class="col-sm-3">Total Marks</dt>
+                    <dd class="col-sm-9">@item.Assessment.TotalMarks</dd>
+                    <dt class="col-sm-3">Passing Marks</dt>
+                    <dd class="col-sm-9">@item.Assessment.PassingMarks</dd>
+                </dl>
+            </div>
+        </div>
 
-    <h3>Score Analytics</h3>
-    <div>
-        <dl class="row">
-            <dt class="col-sm-2">Average Score</dt>
-            <dd class="col-sm-10">@item.AverageScore</dd>
-            <dt class="col-sm-2">Highest Score</dt>
-            <dd class="col-sm-10">@item.HighestScore</dd>
-            <dt class="col-sm-2">Lowest Score</dt>
-            <dd class="col-sm-10">@item.LowestScore</dd>
-        </dl>
-    </div>
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Score Analytics</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Average Score</dt>
+                    <dd class="col-sm-9">@item.AverageScore</dd>
+                    <dt class="col-sm-3">Highest Score</dt>
+                    <dd class="col-sm-9">@item.HighestScore</dd>
+                    <dt class="col-sm-3">Lowest Score</dt>
+                    <dd class="col-sm-9">@item.LowestScore</dd>
+                </dl>
+            </div>
+        </div>
 
-    <h3>Taken Assessments</h3>
-    <div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Learner</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var takenAssessment in item.Assessment.TakenAssessments)
-                {
-                    <tr>
-                        <td>@takenAssessment.Learner.FirstName @takenAssessment.Learner.LastName</td>
-                        <td>@takenAssessment.ScoredPoint</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Taken Assessments</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Learner</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Removed problematic foreach loop -->
+                    </tbody>
+                </table>
+                <a href="@Url.Action("LearnersList", "Instructor", new { assessmentId = item.Assessment.AssessmentId })" class="btn btn-primary mt-3">View More</a>
+            </div>
+        </div>
+    }
 }

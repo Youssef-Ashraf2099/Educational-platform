@@ -128,7 +128,27 @@ namespace Course_station.Controllers
         }
 
 
+        public IActionResult LearnersList(int assessmentId)
+        {
+            var assessment = _context.Assessments
+                .Include(a => a.TakenAssessments)
+                .ThenInclude(ta => ta.Learner)
+                .FirstOrDefault(a => a.AssessmentId == assessmentId);
 
+            if (assessment == null)
+            {
+                return NotFound();
+            }
+
+            var learners = assessment.TakenAssessments.Select(ta => new
+            {
+                ta.Learner.FirstName,
+                ta.Learner.LastName,
+                ta.ScoredPoint
+            });
+
+            return View(learners);
+        }
 
         public IActionResult Create()
         {
