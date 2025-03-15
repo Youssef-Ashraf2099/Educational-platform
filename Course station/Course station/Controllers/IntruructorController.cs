@@ -96,6 +96,38 @@ namespace Course_station.Controllers
             return View("~/Views/Achievements/Create.cshtml", achievement);
         }
 
+        public async Task<IActionResult> AssessmentAnalytics()
+        {
+            var instructorId = HttpContext.Session.GetInt32("InstructorId");
+            if (instructorId == null)
+            {
+                return RedirectToAction("Login", "Instructor");
+            }
+
+            var modules = await _context.Modules
+                .Where(m => m.Course.Instructors.Any(i => i.InstructorId == instructorId))
+                .ToListAsync();
+
+            var moduleIds = modules.Select(m => m.ModuleId).ToList();
+
+            var assessments = await _context.Assessments
+                .Include(a => a.TakenAssessments)
+                .ThenInclude(ta => ta.Learner)
+                .Where(a => a.ModuleId.HasValue && moduleIds.Contains(a.ModuleId.Value))
+                .ToListAsync();
+
+            var analytics = assessments.Select(a => new
+            {
+                Assessment = a,
+                AverageScore = a.TakenAssessments.Any() ? a.TakenAssessments.Average(ta => ta.ScoredPoint) : 0,
+                HighestScore = a.TakenAssessments.Any() ? a.TakenAssessments.Max(ta => ta.ScoredPoint) : 0,
+                LowestScore = a.TakenAssessments.Any() ? a.TakenAssessments.Min(ta => ta.ScoredPoint) : 0
+            }).ToList();
+
+            return View(analytics);
+        }
+
+
 
 
         public IActionResult Create()
@@ -196,57 +228,7 @@ namespace Course_station.Controllers
             return View(model);
         }
 
-        //// GET: Instructor/Delete/5
-        //// GET: Instructor/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var instructor = await _context.Instructors
-        //        .FirstOrDefaultAsync(m => m.InstructorId == id);
-        //    if (instructor == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View("DeleteConfirmation", instructor);
-        //}
-
-        //// POST: Instructor/DeleteConfirmed/5
-        //[HttpPost, ActionName("DeleteConfirmed")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    if (id <= 0)
-        //    {
-        //        TempData["ErrorMessage"] = "Invalid instructor ID.";
-        //        return RedirectToAction("Index", "Home");
-        //    }
-
-        //    var instructor = await _context.Instructors.FindAsync(id);
-        //    if (instructor == null)
-        //    {
-        //        TempData["ErrorMessage"] = "Instructor not found.";
-        //        return RedirectToAction("Index", "Home");
-        //    }
-
-        //    try
-        //    {
-        //        _context.Instructors.Remove(instructor);
-        //        await _context.SaveChangesAsync();
-        //        TempData["Message"] = "Instructor deleted successfully!";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        TempData["ErrorMessage"] = $"Error deleting instructor: {ex.Message}";
-        //    }
-
-        //    return RedirectToAction("Index", "Home");
-        //}
-
+       
 
         public async Task<IActionResult> Delete(int? id)
         {
@@ -843,15 +825,15 @@ namespace Course_station.Controllers
             return View();
         }
 
-        // 20. Generate analytics on assessment scores across various modules or courses (average of scores)
-        public async Task<IActionResult> AssessmentAnalytics(int courseId, int moduleId)
-        {
-            var analytics = await _context.Assessments
-                .FromSqlRaw("EXEC AssessmentAnalytics @CourseID = {0}, @ModuleID = {1}", courseId, moduleId)
-                .ToListAsync();
+        //// 20. Generate analytics on assessment scores across various modules or courses (average of scores)
+        //public async Task<IActionResult> AssessmentAnalytics(int courseId, int moduleId)
+        //{
+        //    var analytics = await _context.Assessments
+        //        .FromSqlRaw("EXEC AssessmentAnalytics @CourseID = {0}, @ModuleID = {1}", courseId, moduleId)
+        //        .ToListAsync();
 
-            return View(analytics);
-        }
+        //    return View(analytics);
+        //}
 
         // 21. View trends in learners’ emotional feedback to support well-being in courses I teach
         public async Task<IActionResult> EmotionalTrendAnalysisIns(int courseId, int moduleId, DateTime timePeriod)
