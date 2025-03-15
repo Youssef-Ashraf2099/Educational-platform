@@ -142,13 +142,16 @@ namespace Course_station.Controllers
 
             var learners = assessment.TakenAssessments.Select(ta => new
             {
+                ta.Learner.LearnerId,
                 ta.Learner.FirstName,
                 ta.Learner.LastName,
-                ta.ScoredPoint
-            });
+                ta.ScoredPoint,
+                Passed = ta.ScoredPoint >= assessment.PassingMarks // Assuming PassingMarks is a property of Assessment
+            }).ToList();
 
             return View(learners);
         }
+
 
         public IActionResult Create()
         {

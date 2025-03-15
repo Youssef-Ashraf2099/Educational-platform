@@ -17,16 +17,29 @@ else
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
+                <th>Learner ID</th>
                 <th>Learner</th>
                 <th>Score</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var learner in Model)
             {
                 <tr>
+                    <td>@learner.LearnerId</td>
                     <td>@learner.FirstName @learner.LastName</td>
                     <td>@learner.ScoredPoint</td>
+                    <td>
+                        @if (learner.Passed)
+                        {
+                            <span class="text-success">&#x2714; Passed</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">&#x2716; Failed</span>
+                        }
+                    </td>
                 </tr>
             }
         </tbody>
