@@ -4,52 +4,59 @@
     ViewData["Title"] = "Assessment Details";
 }
 
-<h2>Assessment Details</h2>
+<h2 class="text-primary">@ViewData["Title"]</h2>
 
-<div>
-    <h4>@Model.Title</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Description</dt>
-        <dd class="col-sm-10">@Model.Description</dd>
-        <dt class="col-sm-2">Total Marks</dt>
-        <dd class="col-sm-10">@Model.TotalMarks</dd>
-        <dt class="col-sm-2">Passing Marks</dt>
-        <dd class="col-sm-10">@Model.PassingMarks</dd>
-    </dl>
+<div class="card mb-4">
+    <div class="card-header bg-info text-white">
+        <h4>@Model.Title</h4>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@Model.Description</dd>
+            <dt class="col-sm-3">Total Marks</dt>
+            <dd class="col-sm-9">@Model.TotalMarks</dd>
+            <dt class="col-sm-3">Passing Marks</dt>
+            <dd class="col-sm-9">@Model.PassingMarks</dd>
+        </dl>
+    </div>
 </div>
 
-<h3>Score Analytics</h3>
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">Average Score</dt>
-        <dd class="col-sm-10">@ViewBag.AverageScore</dd>
-        <dt class="col-sm-2">Highest Score</dt>
-        <dd class="col-sm-10">@ViewBag.HighestScore</dd>
-        <dt class="col-sm-2">Lowest Score</dt>
-        <dd class="col-sm-10">@ViewBag.LowestScore</dd>
-    </dl>
+<h3 class="text-secondary">Score Analytics</h3>
+<div class="card mb-4">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Average Score</dt>
+            <dd class="col-sm-9">@ViewBag.AverageScore</dd>
+            <dt class="col-sm-3">Highest Score</dt>
+            <dd class="col-sm-9">@ViewBag.HighestScore</dd>
+            <dt class="col-sm-3">Lowest Score</dt>
+            <dd class="col-sm-9">@ViewBag.LowestScore</dd>
+        </dl>
+    </div>
 </div>
 
-<h3>Taken Assessments</h3>
-<div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Learner</th>
-                <th>Score</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var takenAssessment in Model.TakenAssessments)
-            {
+<h3 class="text-secondary">Taken Assessments</h3>
+<div class="card mb-4">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@takenAssessment.Learner.FirstName @takenAssessment.Learner.LastName</td>
-                    <td>@takenAssessment.ScoredPoint</td>
+                    <th>Learner</th>
+                    <th>Score</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var takenAssessment in Model.TakenAssessments)
+                {
+                    <tr>
+                        <td>@takenAssessment.Learner.FirstName @takenAssessment.Learner.LastName</td>
+                        <td>@takenAssessment.ScoredPoint</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <div>

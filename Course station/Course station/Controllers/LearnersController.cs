@@ -48,6 +48,56 @@ namespace Course_station.Controllers
             return View();
         }
 
+        public async Task<IActionResult> AvailableAssessments()
+        {
+            // Get the learner ID from the session
+            var learnerId = HttpContext.Session.GetInt32("LearnerId");
+            if (learnerId == null)
+            {
+                return RedirectToAction("Login", "Learners");
+            }
+
+            // Debugging: Get all enrolled courses
+            var enrolledCourses = await _context.CourseEnrollments
+                .Where(ce => ce.LearnerId == learnerId)
+                .Include(ce => ce.Course)
+                .ToListAsync();
+
+            var enrolledCourseIds = enrolledCourses.Select(ce => ce.CourseId).ToList();
+
+            // Print debugging info to the console
+            Console.WriteLine($"Learner {learnerId} is enrolled in {enrolledCourseIds.Count} courses");
+            foreach (var course in enrolledCourses)
+            {
+                Console.WriteLine($"Course ID: {course.CourseId}, Title: {course.Course?.Title}");
+            }
+
+            // Get all modules for the enrolled courses
+            var moduleIds = await _context.Modules
+                .Where(m => enrolledCourseIds.Contains(m.CourseId))
+                .Select(m => m.ModuleId)
+                .ToListAsync();
+
+            Console.WriteLine($"Found {moduleIds.Count} modules for enrolled courses");
+
+            // Get all assessments for these modules or directly linked to courses
+            var assessments = await _context.Assessments
+                .Where(a =>
+                    (moduleIds.Contains(a.ModuleId ?? -1)) ||
+                    (enrolledCourseIds.Contains(a.CourseId ?? -1))
+                )
+                .Include(a => a.Module)
+                .ToListAsync();
+
+            Console.WriteLine($"Found {assessments.Count} assessments for enrolled courses");
+
+            // Prepare viewbag data for the view
+            ViewBag.LearnerId = learnerId;
+
+            return View(assessments);
+        }
+
+
 
         // GET: Learners (Admin only)
         [AdminPageOnly]

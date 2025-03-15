@@ -64,7 +64,7 @@
             <div class="card-icon"><i class="fas fa-edit"></i></div>
             <h3>Assessments</h3>
             <p>Check your assessments and monitor your progress.</p>
-            <a asp-controller="Assessments" asp-action="Index" class="btn-card">View Assessments</a>
+            <a asp-controller="Learners" asp-action="AvailableAssessments" asp-route-learnerId="@HttpContextAccessor.HttpContext?.Session.GetInt32("LearnerId")" class="btn-card">View Available Assessments</a>
         </div>
 
         <div class="card">
