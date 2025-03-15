@@ -11,7 +11,7 @@ To run this project, you need to have ASP.NET 9 installed on your local machine.
 2. Create a new database named `CourseStation`.
 
 ### Step 3: Change Configuration Files
-1. Update the `appsettings.json` file in the `Course station/Course station/` directory with your local database server details:
+1. Update the `appsettings.json` file and `appsettingDevelopment.json` in the `Course station/Course station/` directory with your local database server details:
     ```json
     {
       "ConnectionStrings": {
@@ -56,3 +56,10 @@ dotnet build
 
 dotnet run
  ```
+## in case if you want to update any model
+
+```
+dotnet ef migrations add <MigrationName>
+ # Make sure to replace the `<MigrationName>` placeholder with a meaningful name when you run the command or according to the file you are updating.
+dotnet ef database update
+```
