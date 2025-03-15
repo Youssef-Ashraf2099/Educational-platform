@@ -6,6 +6,8 @@
 
 <h2 class="text-center my-4">@ViewData["Title"]</h2>
 
+<input type="text" id="searchInput" class="form-control mb-3" placeholder="Search by Learner ID" onkeyup="searchLearner()">
+
 @if (!Model.Any())
 {
     <div class="alert alert-warning text-center" role="alert">
@@ -14,7 +16,7 @@
 }
 else
 {
-    <table class="table table-striped">
+    <table class="table table-striped" id="learnersTable">
         <thead class="thead-dark">
             <tr>
                 <th>Learner ID</th>
@@ -27,7 +29,7 @@ else
             @foreach (var learner in Model)
             {
                 <tr>
-                    <td>@learner.LearnerId</td>
+                    <td class="learner-id">@learner.LearnerId</td>
                     <td>@learner.FirstName @learner.LastName</td>
                     <td>@learner.ScoredPoint</td>
                     <td>
@@ -45,3 +47,25 @@ else
         </tbody>
     </table>
 }
+
+<script>
+    function searchLearner() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("learnersTable");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 1; i < tr.length; i++) {
+            td = tr[i].getElementsByClassName("learner-id")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
