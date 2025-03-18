@@ -1,3 +1,6 @@
+--create database
+--use database
+
 CREATE TABLE Learner (
     Learner_ID INT PRIMARY KEY IDENTITY,
     first_name VARCHAR(20),
@@ -400,4 +403,16 @@ CREATE TABLE LearnersGoals (
     PRIMARY KEY (GoalID, LearnerID) ,
     FOREIGN KEY (GoalID) REFERENCES Learning_goal(ID) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (LearnerID) REFERENCES Learner(Learner_ID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
+CREATE TABLE LearnerQuest(
+LearnerId INT,
+QuestId INT,
+AssignedDate Datetime,
+status varchar(20),
+Primary key(QuestID,LearnerID),
+
+FOREIGN KEY (LearnerID) REFERENCES Learner(Learner_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (QuestID) REFERENCES Quest(QuestID) ON DELETE CASCADE ON UPDATE CASCADE
 );
