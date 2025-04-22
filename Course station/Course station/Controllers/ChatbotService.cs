@@ -25,8 +25,8 @@ public class ChatbotService
             var jsonPayload = JsonSerializer.Serialize(payload);
             var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
-            // Call the Python API
-            var response = await _httpClient.PostAsync("http://127.0.0.1:8000/generate-question", content);
+            // Call the Python API HENAAAAAAAAA
+            var response = await _httpClient.PostAsync("http://127.0.0.1:8000/generate-question", content); //el linker AHOOOOO
 
             if (!response.IsSuccessStatusCode)
             {
