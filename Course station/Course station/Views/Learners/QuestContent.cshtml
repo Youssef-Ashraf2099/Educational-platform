@@ -36,41 +36,14 @@ else if (Model.LearnerQuest?.Status == "In Progress")
 {
     <div class="card mb-4">
         <div class="card-header">
-            <h4>Quest Activities</h4>
+            <h4>Generate a Question</h4>
         </div>
         <div class="card-body">
-            <p>Here you can interact with the quest content and complete the required activities:</p>
-
-            <!-- Simulated quest content - expand this with real quest activities -->
-            <div class="quest-activities mb-4">
-                <h5>Activity 1: Introduction</h5>
-                <p>Read through the quest objectives and understand what you need to accomplish.</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="activity1">
-                    <label class="form-check-label" for="activity1">Mark as done</label>
-                </div>
-
-                <h5 class="mt-3">Activity 2: Research</h5>
-                <p>Research the topic and gather necessary resources.</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="activity2">
-                    <label class="form-check-label" for="activity2">Mark as done</label>
-                </div>
-
-                <h5 class="mt-3">Activity 3: Implementation</h5>
-                <p>Apply what you've learned to solve the quest challenge.</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="activity3">
-                    <label class="form-check-label" for="activity3">Mark as done</label>
-                </div>
+            <textarea id="inputText" class="form-control" rows="4" placeholder="Enter text here..."></textarea>
+            <button class="btn btn-primary mt-3" onclick="generateQuestion()">Generate Question</button>
+            <div class="mt-3">
+                <p id="generatedQuestion" class="text-success"></p>
             </div>
-
-            <form asp-action="CompleteQuest" asp-controller="Learners" method="post">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="learnerId" value="@Model.LearnerId" />
-                <input type="hidden" name="questId" value="@Model.Quest.QuestId" />
-                <button type="submit" class="btn btn-success btn-lg">Submit & Complete Quest</button>
-            </form>
         </div>
     </div>
 }
@@ -86,27 +59,20 @@ else
 
 @section Scripts {
     <script>
-        // Simple script to enhance the interactive feel
-        $(document).ready(function() {
-            // Enable submit button only when all activities are checked
-            $('input[type="checkbox"]').change(function() {
-                var allChecked = true;
-                $('input[type="checkbox"]').each(function() {
-                    if (!$(this).is(':checked')) {
-                        allChecked = false;
-                        return false;
-                    }
-                });
-
-                if (allChecked) {
-                    $('button[type="submit"]').removeAttr('disabled');
-                } else {
-                    $('button[type="submit"]').attr('disabled', 'disabled');
-                }
+        async function generateQuestion() {
+            const inputText = document.getElementById("inputText").value;
+            const response = await fetch('/api/Chatbot/generate-question', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(inputText)
             });
 
-            // Initially disable submit button
-            $('button[type="submit"]').attr('disabled', 'disabled');
-        });
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("generatedQuestion").innerText = "Generated Question: " + data.question;
+            } else {
+                alert("Failed to generate a question. Please try again.");
+            }
+        }
     </script>
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -14,42 +15,22 @@ public class ChatbotController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost("suggestions")]
-    public IActionResult GetSuggestions([FromBody] string userInput)
+    [HttpPost("generate-question")]
+    public async Task<IActionResult> GenerateQuestion([FromBody] string text)
     {
         try
         {
-            if (string.IsNullOrEmpty(userInput))
+            if (string.IsNullOrEmpty(text))
             {
-                return BadRequest("User input cannot be empty.");
+                return BadRequest("Input text cannot be empty.");
             }
 
-            var suggestions = _chatbotService.GetSuggestions(userInput);
-            return Ok(suggestions);
+            var question = await _chatbotService.GenerateQuestionAsync(text);
+            return Ok(new { question });
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error in ChatbotController: {ex.Message}");
-            return StatusCode(500, "An error occurred while processing your request.");
-        }
-    }
-
-    [HttpPost("chat")]
-    public IActionResult Chat([FromBody] string userInput)
-    {
-        try
-        {
-            if (string.IsNullOrEmpty(userInput))
-            {
-                return BadRequest("User input cannot be empty.");
-            }
-
-            var response = _chatbotService.GetResponse(userInput);
-            return Ok(response);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"Error in ChatbotController: {ex.Message}");
+            _logger.LogError($"Error in GenerateQuestion: {ex.Message}");
             return StatusCode(500, "An error occurred while processing your request.");
         }
     }
