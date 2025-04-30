@@ -78,6 +78,11 @@
                                 // Handle unexpected response structure
                                 throw new Error("Invalid response format");
                             }
+
+                            // Add the answer to the output
+                            if (data.answer) {
+                                output += `<br><strong>Answer:</strong> ${data.answer}`;
+                            }
                         } catch (parseError) {
                             console.error(`JSON parse error for ${endpoint.type}:`, parseError);
                             output = `<span class="text-danger">Failed to parse response for ${endpoint.type}. Please try again.</span>`;
