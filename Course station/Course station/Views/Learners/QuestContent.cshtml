@@ -1,78 +1,97 @@
-﻿@model Course_station.Controllers.LearnersController.JoinQuestViewModel
-@{
-    ViewData["Title"] = "Quest Content";
-}
-
-<h2>Quest Content: @Model.Quest.Title</h2>
-
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success">@TempData["Message"]</div>
-}
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
-
-<div class="card mb-4">
-    <div class="card-header">
-        <h4>Quest Details</h4>
-    </div>
-    <div class="card-body">
-        <p><strong>Description:</strong> @Model.Quest.Description</p>
-        <p><strong>Difficulty:</strong> @Model.Quest.DifficultyLevel</p>
-        <p><strong>Criteria:</strong> @Model.Quest.Criteria</p>
-    </div>
-</div>
-
-@if (Model.LearnerQuest?.Status == "Completed")
-{
-    <div class="alert alert-info">
-        <h4>Quest Completed</h4>
-        <p>Congratulations! You have successfully completed this quest.</p>
-    </div>
-}
-else if (Model.LearnerQuest?.Status == "In Progress")
-{
-    <div class="card mb-4">
-        <div class="card-header">
-            <h4>Generate a Question</h4>
-        </div>
-        <div class="card-body">
-            <textarea id="inputText" class="form-control" rows="4" placeholder="Enter text here..."></textarea>
-            <button class="btn btn-primary mt-3" onclick="generateQuestion()">Generate Question</button>
-            <div class="mt-3">
-                <p id="generatedQuestion" class="text-success"></p>
-            </div>
-        </div>
-    </div>
-}
-else
-{
-    <div class="alert alert-warning">
-        <p>You haven't joined this quest yet.</p>
-        <a asp-action="JoinQuest" asp-route-learnerId="@Model.LearnerId" asp-route-questId="@Model.Quest.QuestId" class="btn btn-primary">Join This Quest</a>
-    </div>
-}
-
-<a asp-action="AvailableQuests" asp-route-learnerId="@Model.LearnerId" class="btn btn-secondary mt-3">Back to Quests</a>
-
-@section Scripts {
+﻿@section Scripts {
     <script>
         async function generateQuestion() {
-            const inputText = document.getElementById("inputText").value;
-            const response = await fetch('/api/Chatbot/generate-question', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(inputText)
-            });
+            console.log("generateQuestion function triggered."); // Debug: Function entry
 
-            if (response.ok) {
-                const data = await response.json();
-                document.getElementById("generatedQuestion").innerText = "Generated Question: " + data.question;
-            } else {
-                alert("Failed to generate a question. Please try again.");
+            const inputText = document.getElementById("inputText").value;
+            console.log("Input text:", inputText); // Debug: Log input text
+
+            if (!inputText) {
+                alert("Please enter some text.");
+                console.error("Input text is empty."); // Debug: Log empty input error
+                return;
+            }
+
+            const endpoints = [
+                { url: '/api/Chatbot/generate-question', type: 'General Question', elementId: 'generalQuestion' },
+                { url: '/api/Chatbot/generate-mcq', type: 'MCQ', elementId: 'mcqQuestion' },
+                { url: '/api/Chatbot/generate-truefalse', type: 'True/False', elementId: 'trueFalseQuestion' },
+                { url: '/api/Chatbot/generate-coding', type: 'Coding Question', elementId: 'codingQuestion' }
+            ];
+
+            for (const endpoint of endpoints) {
+                console.log(`Calling endpoint: ${endpoint.url} for ${endpoint.type}`); // Debug: Log endpoint being called
+
+                try {
+                    // Important fix: Send text as a property of an object
+                    const response = await fetch(endpoint.url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text: inputText })
+                    });
+
+                    console.log(`Response status for ${endpoint.type}:`, response.status); // Debug: Log response status
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log(`Response data for ${endpoint.type}:`, data); // Debug: Log response data
+
+                        let output = '';
+
+                        if (endpoint.type === 'MCQ') {
+                            output = `
+                                <strong>Question:</strong> ${data.question}<br>
+                                <strong>Options:</strong><br>
+                                A) ${data.options[0]}<br>
+                                B) ${data.options[1]}<br>
+                                C) ${data.options[2]}<br>
+                                D) ${data.options[3]}<br>
+                                <strong>Correct Answer:</strong> ${data.correctAnswer}
+                            `;
+                        } else if (endpoint.type === 'True/False') {
+                            output = `
+                                <strong>Statement:</strong> ${data.statement}<br>
+                                <strong>Correct Answer:</strong> ${data.correctAnswer}
+                            `;
+                        } else {
+                            output = `<strong>${endpoint.type}:</strong> ${data.question}`;
+                        }
+
+                        document.getElementById(endpoint.elementId).innerHTML = output;
+                        console.log(`Output for ${endpoint.type} updated successfully.`); // Debug: Log successful update
+                    } else {
+                        const errorText = await response.text();
+                        console.error(`Error response for ${endpoint.type}:`, errorText); // Debug: Log error response
+                        document.getElementById(endpoint.elementId).innerHTML = `<span class="text-danger">Failed to generate ${endpoint.type}. Please try again.</span>`;
+                    }
+                } catch (error) {
+                    console.error(`Exception for ${endpoint.type}:`, error); // Debug: Log exception
+                    document.getElementById(endpoint.elementId).innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+                }
             }
         }
     </script>
 }
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h4>Generate a Question</h4>
+    </div>
+    <div class="card-body">
+        <textarea id="inputText" class="form-control" rows="4" placeholder="Enter text here..."></textarea>
+        <button class="btn btn-primary mt-3" onclick="generateQuestion()">Generate Questions</button>
+        <div class="mt-3">
+            <h5>General Question</h5>
+            <p id="generalQuestion" class="text-success"></p>
+
+            <h5>MCQ</h5>
+            <p id="mcqQuestion" class="text-success"></p>
+
+            <h5>True/False Question</h5>
+            <p id="trueFalseQuestion" class="text-success"></p>
+
+            <h5>Coding Question</h5>
+            <p id="codingQuestion" class="text-success"></p>
+        </div>
+    </div>
+</div>
