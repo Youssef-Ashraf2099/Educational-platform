@@ -1,16 +1,34 @@
 ﻿@section Scripts {
     <script>
         async function generateQuestion() {
-            console.log("generateQuestion function triggered."); // Debug: Function entry
+            console.log("generateQuestion function triggered.");
 
             const inputText = document.getElementById("inputText").value;
-            console.log("Input text:", inputText); // Debug: Log input text
+            console.log("Input text:", inputText);
 
             if (!inputText) {
                 alert("Please enter some text.");
-                console.error("Input text is empty."); // Debug: Log empty input error
+                console.error("Input text is empty.");
                 return;
             }
+
+            // Show loading indicators for all sections
+            const sections = ['generalQuestion', 'mcqQuestion', 'trueFalseQuestion', 'codingQuestion'];
+            sections.forEach(id => {
+                document.getElementById(id).innerHTML = `
+                    <div class="loading-indicator">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <span class="ms-2">Generating...</span>
+                    </div>
+                `;
+            });
+
+            // Disable the generate button during processing
+            const generateButton = document.querySelector('button.btn-primary');
+            generateButton.disabled = true;
+            generateButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generating...';
 
             const endpoints = [
                 { url: '/api/Chatbot/generate-question', type: 'General Question', elementId: 'generalQuestion' },
@@ -19,60 +37,115 @@
                 { url: '/api/Chatbot/generate-coding', type: 'Coding Question', elementId: 'codingQuestion' }
             ];
 
-            for (const endpoint of endpoints) {
-                console.log(`Calling endpoint: ${endpoint.url} for ${endpoint.type}`); // Debug: Log endpoint being called
+            // Process each endpoint independently
+            const promises = endpoints.map(async (endpoint) => {
+                console.log(`Calling endpoint: ${endpoint.url} for ${endpoint.type}`);
 
                 try {
-                    // Important fix: Send text as a property of an object
                     const response = await fetch(endpoint.url, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ text: inputText })
                     });
 
-                    console.log(`Response status for ${endpoint.type}:`, response.status); // Debug: Log response status
+                    console.log(`Response status for ${endpoint.type}:`, response.status);
+
+                    let output = '';
 
                     if (response.ok) {
-                        const data = await response.json();
-                        console.log(`Response data for ${endpoint.type}:`, data); // Debug: Log response data
+                        try {
+                            const data = await response.json();
+                            console.log(`Response data for ${endpoint.type}:`, data);
 
-                        let output = '';
-
-                        if (endpoint.type === 'MCQ') {
-                            output = `
-                                <strong>Question:</strong> ${data.question}<br>
-                                <strong>Options:</strong><br>
-                                A) ${data.options[0]}<br>
-                                B) ${data.options[1]}<br>
-                                C) ${data.options[2]}<br>
-                                D) ${data.options[3]}<br>
-                                <strong>Correct Answer:</strong> ${data.correctAnswer}
-                            `;
-                        } else if (endpoint.type === 'True/False') {
-                            output = `
-                                <strong>Statement:</strong> ${data.statement}<br>
-                                <strong>Correct Answer:</strong> ${data.correctAnswer}
-                            `;
-                        } else {
-                            output = `<strong>${endpoint.type}:</strong> ${data.question}`;
+                            if (endpoint.type === 'MCQ' && data.options && data.options.length >= 4) {
+                                output = `
+                                    <strong>Question:</strong> ${data.question}<br>
+                                    <strong>Options:</strong><br>
+                                    A) ${data.options[0]}<br>
+                                    B) ${data.options[1]}<br>
+                                    C) ${data.options[2]}<br>
+                                    D) ${data.options[3]}<br>
+                                    <strong>Correct Answer:</strong> ${data.correctAnswer}
+                                `;
+                            } else if (endpoint.type === 'True/False' && data.statement) {
+                                output = `
+                                    <strong>Statement:</strong> ${data.statement}<br>
+                                    <strong>Correct Answer:</strong> ${data.correctAnswer}
+                                `;
+                            } else if (data.question) {
+                                output = `<strong>${endpoint.type}:</strong> ${data.question}`;
+                            } else {
+                                // Handle unexpected response structure
+                                throw new Error("Invalid response format");
+                            }
+                        } catch (parseError) {
+                            console.error(`JSON parse error for ${endpoint.type}:`, parseError);
+                            output = `<span class="text-danger">Failed to parse response for ${endpoint.type}. Please try again.</span>`;
                         }
-
-                        document.getElementById(endpoint.elementId).innerHTML = output;
-                        console.log(`Output for ${endpoint.type} updated successfully.`); // Debug: Log successful update
                     } else {
                         const errorText = await response.text();
-                        console.error(`Error response for ${endpoint.type}:`, errorText); // Debug: Log error response
-                        document.getElementById(endpoint.elementId).innerHTML = `<span class="text-danger">Failed to generate ${endpoint.type}. Please try again.</span>`;
+                        console.error(`Error response for ${endpoint.type}:`, errorText);
+                        output = `<span class="text-danger">Failed to generate ${endpoint.type}. Server returned ${response.status}.</span>`;
                     }
-                } catch (error) {
-                    console.error(`Exception for ${endpoint.type}:`, error); // Debug: Log exception
-                    document.getElementById(endpoint.elementId).innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
-                }
-            }
-        }
-    </script>
-}
 
+                    // Update the UI with the result and apply fade-in effect
+                    const element = document.getElementById(endpoint.elementId);
+                    element.innerHTML = output;
+                    element.classList.add('fade-in');
+
+                    // Fix for fade-in animation - add show class after a brief delay
+                    setTimeout(() => {
+                        element.classList.add('show');
+                    }, 50);
+
+                } catch (error) {
+                    console.error(`Exception for ${endpoint.type}:`, error);
+                    const element = document.getElementById(endpoint.elementId);
+                    element.innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+                    element.classList.add('fade-in', 'show');
+                }
+            });
+
+            // Wait for all requests to complete
+            await Promise.allSettled(promises);
+
+            // Re-enable the generate button
+            generateButton.disabled = false;
+            generateButton.innerHTML = 'Generate Questions';
+        }
+
+        // Add this initialization when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Clear any previous fade-in classes
+            const resultElements = document.querySelectorAll('.result-content');
+            resultElements.forEach(el => {
+                el.classList.remove('fade-in', 'show');
+            });
+        });
+    </script>
+
+    <style>
+        .loading-indicator {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        /* Add a fade-in effect using CSS transitions */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+            .fade-in.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+    </style>
+}
 <div class="card mb-4">
     <div class="card-header">
         <h4>Generate a Question</h4>
@@ -80,18 +153,43 @@
     <div class="card-body">
         <textarea id="inputText" class="form-control" rows="4" placeholder="Enter text here..."></textarea>
         <button class="btn btn-primary mt-3" onclick="generateQuestion()">Generate Questions</button>
-        <div class="mt-3">
-            <h5>General Question</h5>
-            <p id="generalQuestion" class="text-success"></p>
 
-            <h5>MCQ</h5>
-            <p id="mcqQuestion" class="text-success"></p>
+        <div class="results mt-4">
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">General Question</h5>
+                </div>
+                <div class="card-body">
+                    <p id="generalQuestion" class="result-content fade-in mb-0">Enter text and click Generate Questions to see results.</p>
+                </div>
+            </div>
 
-            <h5>True/False Question</h5>
-            <p id="trueFalseQuestion" class="text-success"></p>
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">MCQ</h5>
+                </div>
+                <div class="card-body">
+                    <p id="mcqQuestion" class="result-content fade-in mb-0">Enter text and click Generate Questions to see results.</p>
+                </div>
+            </div>
 
-            <h5>Coding Question</h5>
-            <p id="codingQuestion" class="text-success"></p>
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">True/False Question</h5>
+                </div>
+                <div class="card-body">
+                    <p id="trueFalseQuestion" class="result-content fade-in mb-0">Enter text and click Generate Questions to see results.</p>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Coding Question</h5>
+                </div>
+                <div class="card-body">
+                    <p id="codingQuestion" class="result-content fade-in mb-0">Enter text and click Generate Questions to see results.</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

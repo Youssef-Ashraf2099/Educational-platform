@@ -11,18 +11,28 @@ public class ChatbotService
     private readonly HttpClient _httpClient;
     private readonly ILogger<ChatbotService> _logger;
     private readonly string _apiBaseUrl;
+    private readonly JsonSerializerOptions _jsonOptions;
 
     public ChatbotService(HttpClient httpClient, ILogger<ChatbotService> logger, IConfiguration config)
     {
         _httpClient = httpClient;
         _logger = logger;
         _apiBaseUrl = config["ChatbotApi:BaseUrl"] ?? "http://localhost:8000"; // fallback if not set
+        _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        // You might need to increase the timeout for API calls
+        _httpClient.Timeout = TimeSpan.FromSeconds(10000);
     }
 
     public async Task<string> GenerateQuestionAsync(string text)
     {
         try
         {
+            _logger.LogInformation($"GenerateQuestionAsync called with text: {text}");
+
             var payload = new { text = text };
             var jsonPayload = JsonSerializer.Serialize(payload);
             var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
@@ -47,15 +57,24 @@ public class ChatbotService
 
             try
             {
-                var result = JsonSerializer.Deserialize<QuestionResponse>(responseContent,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                return result?.Question ?? "Error: Empty question in response";
+                var result = JsonSerializer.Deserialize<QuestionResponse>(responseContent, _jsonOptions);
+                if (result == null || string.IsNullOrEmpty(result.Question))
+                {
+                    _logger.LogWarning("Received empty question in response");
+                    return "Error: Empty question in response";
+                }
+                return result.Question;
             }
             catch (JsonException ex)
             {
                 _logger.LogError($"JSON Parsing Error: {ex.Message}, Content: {responseContent}");
                 throw new Exception($"Error parsing API response: {ex.Message}");
             }
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError($"HTTP Request Exception: {ex.ToString()}");
+            throw new Exception($"Failed to connect to API: {ex.Message}", ex);
         }
         catch (Exception ex)
         {
@@ -66,18 +85,65 @@ public class ChatbotService
 
     public async Task<MCQResponse> GenerateMCQAsync(string text)
     {
-        return await CallApi<MCQResponse>($"{_apiBaseUrl}/generate/mcq", new { text = text });
+        try
+        {
+            _logger.LogInformation($"GenerateMCQAsync called with text: {text}");
+            var response = await CallApi<MCQResponse>($"{_apiBaseUrl}/generate/mcq", new { text = text });
+
+            // Validate response data
+            if (response.Options == null || response.Options.Length < 4)
+            {
+                _logger.LogWarning("MCQ response doesn't have enough options");
+                // Provide default options if needed
+                response.Options = response.Options ?? Array.Empty<string>();
+                while (response.Options.Length < 4)
+                {
+                    var newOptions = new string[4];
+                    Array.Copy(response.Options, newOptions, response.Options.Length);
+                    for (int i = response.Options.Length; i < 4; i++)
+                    {
+                        newOptions[i] = $"Option {i + 1}";
+                    }
+                    response.Options = newOptions;
+                }
+            }
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Exception in GenerateMCQAsync: {ex.Message}");
+            throw;
+        }
     }
 
     public async Task<TrueFalseResponse> GenerateTrueFalseAsync(string text)
     {
-        return await CallApi<TrueFalseResponse>($"{_apiBaseUrl}/generate/truefalse", new { text = text });
+        try
+        {
+            _logger.LogInformation($"GenerateTrueFalseAsync called with text: {text}");
+            return await CallApi<TrueFalseResponse>($"{_apiBaseUrl}/generate/truefalse", new { text = text });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Exception in GenerateTrueFalseAsync: {ex.Message}");
+            throw;
+        }
     }
 
     public async Task<string> GenerateCodingQuestionAsync(string text)
     {
-        var response = await CallApi<CodingQuestionResponse>($"{_apiBaseUrl}/generate/coding", new { code = text });
-        return response.Question;
+        try
+        {
+            _logger.LogInformation($"GenerateCodingQuestionAsync called with text: {text}");
+            var response = await CallApi<CodingQuestionResponse>($"{_apiBaseUrl}/generate/coding", new { code = text });
+            return response.Question;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Exception in GenerateCodingQuestionAsync: {ex.Message}");
+            throw;
+        }
     }
 
     private async Task<T> CallApi<T>(string url, object payload)
@@ -101,13 +167,18 @@ public class ChatbotService
                 throw new Exception($"API Error: {response.StatusCode}");
             }
 
-            var options = new JsonSerializerOptions
+            var result = JsonSerializer.Deserialize<T>(responseContent, _jsonOptions);
+            if (result == null)
             {
-                PropertyNameCaseInsensitive = true
-            };
-
-            return JsonSerializer.Deserialize<T>(responseContent, options) ??
                 throw new Exception("Failed to deserialize response");
+            }
+
+            return result;
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError($"HTTP Request Exception: {ex.ToString()}");
+            throw new Exception($"Failed to connect to API: {ex.Message}", ex);
         }
         catch (Exception ex)
         {
