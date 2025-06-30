@@ -1,0 +1,291 @@
+@{
+    ViewData["Title"] = "Quiz Game";
+}
+
+<div class="container mt-4">
+    <h2>Quiz Game</h2>
+    <div id="quiz-setup">
+        <label for="topicSelect"><b>Select a topic to begin:</b></label>
+        <select id="topicSelect" class="form-control" style="max-width:300px;">
+            <option value="Data Structure">Data Structure</option>
+            <option value="Algorithms">Algorithms</option>
+            <option value="OOP">OOP</option>
+        </select>
+        <button id="startQuizBtn" class="btn btn-primary mt-2">Start Quiz</button>
+    </div>
+
+    <div id="quiz-area" style="display:none;">
+        <div class="d-flex justify-content-between align-items-center">
+            <div><b>Question <span id="currentQ"></span>/10</b></div>
+            <div><b>Score: <span id="score"></span></b></div>
+            <div><b>Time left: <span id="timer"></span> sec</b></div>
+        </div>
+        <hr>
+        <div id="questionText" class="mb-3"></div>
+        <div id="optionsArea"></div>
+        <div id="feedback" class="mt-2"></div>
+        <button id="nextBtn" class="btn btn-success mt-3" style="display:none;">Next</button>
+    </div>
+
+    <div id="quiz-result" style="display:none;">
+        <h3 id="resultMsg"></h3>
+        <div id="celebration" style="font-size:2em;"></div>
+        <button class="btn btn-secondary mt-3" onclick="location.reload()">Play Again</button>
+    </div>
+
+    <div id="quiz-error" class="alert alert-danger" style="display:none;"></div>
+</div>
+
+<script>
+const apiBase = 'http://localhost:8000/generate'; // Change to your API base if needed
+let questions = [];
+let current = 0;
+let score = 0;
+let timer = null;
+let timeLeft = 120;
+const questionTypes = ['mcq', 'general', 'truefalse', 'coding'];
+
+function getRandomType() {
+    // You can adjust the distribution here if you want more MCQ, etc.
+    return questionTypes[Math.floor(Math.random() * questionTypes.length)];
+}
+
+document.getElementById('quiz-setup').style.display = '';
+document.getElementById('quiz-area').style.display = 'none';
+document.getElementById('quiz-result').style.display = 'none';
+document.getElementById('quiz-error').style.display = 'none';
+
+// Add a loading message
+let loadingDiv = document.createElement('div');
+loadingDiv.id = 'quiz-loading';
+loadingDiv.className = 'alert alert-info';
+loadingDiv.style.display = 'none';
+loadingDiv.innerText = 'Loading questions, please wait...';
+document.querySelector('.container').appendChild(loadingDiv);
+
+document.getElementById('startQuizBtn').onclick = async function() {
+    const topic = document.getElementById('topicSelect').value;
+    questions = [];
+    current = 0;
+    score = 0;
+    document.getElementById('score').innerText = score;
+    document.getElementById('quiz-setup').style.display = 'none';
+    document.getElementById('quiz-area').style.display = 'none';
+    document.getElementById('quiz-result').style.display = 'none';
+    document.getElementById('quiz-error').style.display = 'none';
+    loadingDiv.style.display = '';
+    const success = await fetchQuestions(topic);
+    loadingDiv.style.display = 'none';
+    if (success) {
+        document.getElementById('quiz-area').style.display = '';
+        showQuestion();
+    }
+};
+
+async function fetchQuestions(topic) {
+    try {
+        // Fetch all questions in parallel for speed
+        const fetches = [];
+        for (let i = 0; i < 10; i++) {
+            const type = getRandomType();
+            let endpoint = '/mcq';
+            if (type === 'general') endpoint = '/general';
+            if (type === 'truefalse') endpoint = '/truefalse';
+            if (type === 'coding') endpoint = '/coding';
+            fetches.push(
+                fetch(apiBase + endpoint, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ topic })
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('API returned error: ' + res.status);
+                    return res.json();
+                })
+                .then(q => {
+                    q.type = type;
+                    return q;
+                })
+            );
+        }
+        questions = await Promise.all(fetches);
+        // Filter out any failed/empty questions
+        questions = questions.filter(q => q && (q.Question || q.Statement));
+        if (questions.length === 0) throw new Error('No questions returned from API.');
+        return true;
+    } catch (err) {
+        document.getElementById('quiz-area').style.display = 'none';
+        document.getElementById('quiz-error').style.display = '';
+        document.getElementById('quiz-error').innerText = 'Failed to load questions. Please check your API server and try again. Error: ' + err.message;
+        document.getElementById('quiz-setup').style.display = '';
+        return false;
+    }
+}
+
+function showQuestion() {
+    if (current >= questions.length) {
+        showResult();
+        return;
+    }
+    document.getElementById('currentQ').innerText = current + 1;
+    document.getElementById('score').innerText = score;
+    document.getElementById('feedback').innerText = '';
+    document.getElementById('nextBtn').style.display = 'none';
+
+    const q = questions[current];
+    const optionsArea = document.getElementById('optionsArea');
+    optionsArea.innerHTML = '';
+    // Render based on type
+    if (q.type === 'mcq') {
+        document.getElementById('questionText').innerText = q.Question;
+        q.Options.forEach((opt, idx) => {
+            const letter = String.fromCharCode(65 + idx);
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-outline-primary m-1';
+            btn.innerText = `${letter}. ${opt}`;
+            btn.onclick = () => handleMCQAnswer(letter, btn);
+            optionsArea.appendChild(btn);
+        });
+    } else if (q.type === 'general') {
+        document.getElementById('questionText').innerText = q.Question;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'form-control mb-2';
+        input.placeholder = 'Type your answer...';
+        optionsArea.appendChild(input);
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-primary';
+        btn.innerText = 'Submit';
+        btn.onclick = () => handleGeneralAnswer(input.value, btn);
+        optionsArea.appendChild(btn);
+    } else if (q.type === 'truefalse') {
+        document.getElementById('questionText').innerText = q.Statement;
+        ['True', 'False'].forEach(val => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-outline-primary m-1';
+            btn.innerText = val;
+            btn.onclick = () => handleTFAnswer(val, btn);
+            optionsArea.appendChild(btn);
+        });
+    } else if (q.type === 'coding') {
+        document.getElementById('questionText').innerText = q.Question;
+        const textarea = document.createElement('textarea');
+        textarea.className = 'form-control mb-2';
+        textarea.rows = 5;
+        textarea.placeholder = 'Type your code answer...';
+        optionsArea.appendChild(textarea);
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-primary';
+        btn.innerText = 'Submit';
+        btn.onclick = () => handleCodingAnswer(textarea.value, btn);
+        optionsArea.appendChild(btn);
+    }
+
+    timeLeft = 120;
+    document.getElementById('timer').innerText = timeLeft;
+    if (timer) clearInterval(timer);
+    timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer').innerText = timeLeft;
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            showFeedback(false, getCorrectAnswer(q), true);
+        }
+    }, 1000);
+}
+
+function handleMCQAnswer(selected, btn) {
+    if (timer) clearInterval(timer);
+    const q = questions[current];
+    const correct = q.CorrectAnswer.trim().toUpperCase();
+    if (selected === correct) {
+        score++;
+        showFeedback(true, correct, false);
+    } else {
+        showFeedback(false, correct, false);
+    }
+    Array.from(document.getElementById('optionsArea').children).forEach(b => b.disabled = true);
+    btn.classList.add(selected === correct ? 'btn-success' : 'btn-danger');
+}
+
+function handleGeneralAnswer(answer, btn) {
+    if (timer) clearInterval(timer);
+    const q = questions[current];
+    const correct = q.Answer ? q.Answer.trim().toLowerCase() : '';
+    if (answer.trim().toLowerCase() === correct) {
+        score++;
+        showFeedback(true, correct, false);
+    } else {
+        showFeedback(false, correct, false);
+    }
+    btn.disabled = true;
+}
+
+function handleTFAnswer(selected, btn) {
+    if (timer) clearInterval(timer);
+    const q = questions[current];
+    const correct = q.CorrectAnswer ? q.CorrectAnswer.trim().toLowerCase() : '';
+    if (selected.toLowerCase() === correct) {
+        score++;
+        showFeedback(true, correct, false);
+    } else {
+        showFeedback(false, correct, false);
+    }
+    Array.from(document.getElementById('optionsArea').children).forEach(b => b.disabled = true);
+    btn.classList.add(selected.toLowerCase() === correct ? 'btn-success' : 'btn-danger');
+}
+
+function handleCodingAnswer(answer, btn) {
+    if (timer) clearInterval(timer);
+    const q = questions[current];
+    const correct = q.Answer ? q.Answer.trim() : '';
+    // For coding, just show the correct answer after submit
+    if (answer.trim() === correct.trim()) {
+        score++;
+        showFeedback(true, correct, false);
+    } else {
+        showFeedback(false, correct, false);
+    }
+    btn.disabled = true;
+}
+
+function getCorrectAnswer(q) {
+    if (q.type === 'mcq') return q.CorrectAnswer;
+    if (q.type === 'general') return q.Answer;
+    if (q.type === 'truefalse') return q.CorrectAnswer;
+    if (q.type === 'coding') return q.Answer;
+    return '';
+}
+
+function showFeedback(isCorrect, correct, timeout) {
+    const feedback = document.getElementById('feedback');
+    if (isCorrect) {
+        feedback.innerHTML = '<span class="text-success">Correct!</span>';
+    } else {
+        feedback.innerHTML = `<span class="text-danger">Wrong!</span> Correct answer: <b>${correct}</b>`;
+    }
+    document.getElementById('nextBtn').style.display = '';
+    document.getElementById('nextBtn').onclick = () => {
+        current++;
+        showQuestion();
+    };
+    if (timeout) {
+        setTimeout(() => {
+            current++;
+            showQuestion();
+        }, 2000);
+    }
+}
+
+function showResult() {
+    document.getElementById('quiz-area').style.display = 'none';
+    document.getElementById('quiz-result').style.display = '';
+    if (score === questions.length) {
+        document.getElementById('resultMsg').innerText = "Congratulations! You answered all questions correctly!";
+        document.getElementById('celebration').innerHTML = "🎉🏆";
+    } else {
+        document.getElementById('resultMsg').innerText = `You scored ${score}/${questions.length}. Try again to get a perfect score!`;
+        document.getElementById('celebration').innerHTML = "";
+    }
+}
+</script> 
