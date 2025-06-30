@@ -55,6 +55,10 @@ import logging
 from fastapi.responses import JSONResponse
 from fastapi import Request
 import traceback
+import os
+from dotenv import load_dotenv
+import os
+from dotenv import load_dotenv
 nltk.download('stopwords')
 nltk.download('wordnet')
 

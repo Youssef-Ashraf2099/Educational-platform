@@ -20,6 +20,8 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.corpus import wordnet
+import os
+from dotenv import load_dotenv
 nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('wordnet')
@@ -68,8 +70,8 @@ def chunk_to_string(chunk):
 
 corpus = [chunk_to_string(item) for item in kb]
 
-openai.api_key = "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"  # <-- Put your API key here
-
+load_dotenv()
+openai.api_key = os.getenv("API_KEY")
 def embed_texts_batched(texts, batch_size=100):
     embeddings = []
     for i in range(0, len(texts), batch_size):
