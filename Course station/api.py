@@ -57,14 +57,73 @@ from fastapi import Request
 import traceback
 import os
 from dotenv import load_dotenv
-import os
-from dotenv import load_dotenv
 nltk.download('stopwords')
 nltk.download('wordnet')
 
 # ====== LOAD DATA AND EMBEDDINGS =======
-with open('book.json', 'r', encoding='utf-8') as f:
-    book_data = json.load(f)
+import os
+
+# Try to load book.json with robust error handling
+book_json_path = os.path.join(os.path.dirname(__file__), 'book.json')
+
+try:
+    with open(book_json_path, 'r', encoding='utf-8') as f:
+        book_data = json.load(f)
+    print(f"Successfully loaded book data from: {book_json_path}")
+except FileNotFoundError:
+    print(f"Warning: book.json not found at {book_json_path}")
+    print("Creating a sample book.json file...")
+    # Create a sample book.json file
+    sample_book_data = {
+        "title": "Data Structures and Algorithms",
+        "chapters": [
+            {
+                "title": "Introduction to Data Structures",
+                "content": "A data structure is a way of organizing and storing data so that it can be accessed and modified efficiently.\nData structures are fundamental building blocks of computer programs.\nThey provide a means to manage large amounts of data efficiently for uses such as large databases and internet indexing services.\nCommon data structures include arrays, linked lists, stacks, queues, trees, and graphs.\nThe choice of data structure depends on the specific requirements of the application.\nArrays provide constant-time access to elements by index.\nLinked lists allow dynamic insertion and deletion of elements."
+            },
+            {
+                "title": "Arrays and Lists",
+                "content": "An array is a collection of elements stored at contiguous memory locations.\nArrays have a fixed size that is determined at the time of creation.\nElements in an array can be accessed using their index, starting from 0.\nThe time complexity for accessing an element by index is O(1).\nInserting or deleting elements in the middle of an array requires shifting other elements.\nDynamic arrays can grow or shrink during runtime.\nArrayLists in Java and vectors in C++ are examples of dynamic arrays."
+            },
+            {
+                "title": "Linked Lists",
+                "content": "A linked list is a linear data structure where elements are stored in nodes.\nEach node contains data and a reference (or link) to the next node in the sequence.\nLinked lists allow dynamic memory allocation and can grow or shrink during runtime.\nThe first node in a linked list is called the head.\nSingly linked lists have nodes that point to the next node only.\nDoubly linked lists have nodes with pointers to both next and previous nodes."
+            }
+        ]
+    }
+    
+    try:
+        with open(book_json_path, 'w', encoding='utf-8') as f:
+            json.dump(sample_book_data, f, indent=2, ensure_ascii=False)
+        book_data = sample_book_data
+        print("Created sample book.json file successfully!")
+    except Exception as e:
+        print(f"Could not create book.json file: {e}")
+        book_data = sample_book_data
+        
+except json.JSONDecodeError as e:
+    print(f"Error: Invalid JSON format in book.json: {e}")
+    print("Using fallback data...")
+    book_data = {
+        "title": "Fallback Data",
+        "chapters": [
+            {
+                "title": "Sample Chapter",
+                "content": "This is sample content for data structures.\nA data structure organizes data efficiently.\nArrays store elements in contiguous memory.\nLinked lists use nodes with pointers."
+            }
+        ]
+    }
+except Exception as e:
+    print(f"Unexpected error loading book.json: {e}")
+    book_data = {
+        "title": "Error Fallback",
+        "chapters": [
+            {
+                "title": "Basic Data Structures",
+                "content": "Data structures are ways to organize data.\nArrays are collections of elements.\nLists can grow and shrink dynamically.\nStacks follow LIFO principle."
+            }
+        ]
+    }
 
 def extract_tagged_questions_from_book(book_data, n_easy=30, n_medium=40, n_hard=30):
     import random
@@ -225,7 +284,8 @@ def chunk_to_string(chunk):
 
 corpus = [chunk_to_string(item) for item in kb]
 
-openai.api_key = "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"  # <--- PUT YOUR VALID KEY HERE
+load_dotenv()
+openai.api_key = os.getenv("API_KEY")
 
 def embed_texts_batched(texts, batch_size=100):
     embeddings = []
@@ -234,20 +294,42 @@ def embed_texts_batched(texts, batch_size=100):
         if not batch:
             continue
         try:
-            response = openai.embeddings.create(
-                input=batch,
-                model="text-embedding-3-small"
-            )
-            batch_embeds = [d.embedding for d in response.data]
+            # Try new OpenAI API format first
+            if hasattr(openai, 'embeddings'):
+                response = openai.embeddings.create(
+                    input=batch,
+                    model="text-embedding-3-small"
+                )
+                batch_embeds = [d.embedding for d in response.data]
+            else:
+                # Fallback to older OpenAI API format
+                response = openai.Embedding.create(
+                    input=batch,
+                    model="text-embedding-ada-002"
+                )
+                batch_embeds = [d['embedding'] for d in response['data']]
             embeddings.extend(batch_embeds)
             time.sleep(0.5)
         except Exception as e:
             print(f"Batch {i} failed: {e}")
+            # Create dummy embeddings to prevent crashes
+            dummy_embedding = [0.0] * 1536  # Standard embedding size
+            for _ in batch:
+                embeddings.append(dummy_embedding)
     return embeddings       
 
 print("Embedding knowledge base (may take a while on first run)...")
-corpus_embeddings = embed_texts_batched(corpus, batch_size=100)
-print(f"Total embeddings: {len(corpus_embeddings)}")
+try:
+    corpus_embeddings = embed_texts_batched(corpus, batch_size=100)
+    print(f"Total embeddings: {len(corpus_embeddings)}")
+    if not corpus_embeddings:
+        print("Warning: No embeddings were created. Using fallback mode.")
+        # Create dummy embeddings
+        corpus_embeddings = [[0.0] * 1536 for _ in corpus]
+except Exception as e:
+    print(f"Error creating embeddings: {e}")
+    print("Using fallback mode without embeddings.")
+    corpus_embeddings = [[0.0] * 1536 for _ in corpus]
 
 def cosine_similarity(a, b):
     a = np.array(a)
@@ -255,10 +337,25 @@ def cosine_similarity(a, b):
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
 def retrieve_relevant_chunks_by_topic(topic, kb, corpus, corpus_embeddings, top_k=3):
-    query_embedding = embed_texts_batched([topic])[0]
-    sims = [cosine_similarity(query_embedding, emb) for emb in corpus_embeddings]
-    top_indices = np.argsort(sims)[-top_k:][::-1]
-    return [kb[i] for i in top_indices]
+    try:
+        query_embedding = embed_texts_batched([topic])
+        if not query_embedding or len(query_embedding) == 0:
+            print(f"[DEBUG] No embeddings generated for topic: {topic}")
+            # Return random chunks as fallback
+            return random.sample(kb, min(top_k, len(kb))) if kb else []
+        
+        query_embedding = query_embedding[0]
+        if not corpus_embeddings:
+            print(f"[DEBUG] No corpus embeddings available")
+            return random.sample(kb, min(top_k, len(kb))) if kb else []
+            
+        sims = [cosine_similarity(query_embedding, emb) for emb in corpus_embeddings]
+        top_indices = np.argsort(sims)[-top_k:][::-1]
+        return [kb[i] for i in top_indices if i < len(kb)]
+    except Exception as e:
+        print(f"[DEBUG] Error in retrieve_relevant_chunks_by_topic: {e}")
+        # Return random chunks as fallback
+        return random.sample(kb, min(top_k, len(kb))) if kb else []
 
 # Leaderboard storage (in-memory for demo)
 leaderboard_easy = []
@@ -352,16 +449,31 @@ def make_tf_question_prompt(topic, source_text, difficulty=None, used_questions=
 def generate_auto_question(prompt, max_tokens=256):
     print(f"[DEBUG] Generating question with prompt:\n{prompt}\n---")
     try:
-        response = openai.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "You are a helpful question generation assistant for data structures exams."},
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=max_tokens,
-            temperature=0.7
-        )
-        result = response.choices[0].message.content.strip()
+        # Try new OpenAI API format first
+        if hasattr(openai, 'chat') and hasattr(openai.chat, 'completions'):
+            response = openai.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "You are a helpful question generation assistant for data structures exams."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=max_tokens,
+                temperature=0.7
+            )
+            result = response.choices[0].message.content.strip()
+        else:
+            # Fallback to older OpenAI API format
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a helpful question generation assistant for data structures exams."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=max_tokens,
+                temperature=0.7
+            )
+            result = response['choices'][0]['message']['content'].strip()
+        
         print(f"[DEBUG] Generated question:\n{result}\n=====")
         return result
     except Exception as e:
@@ -410,15 +522,30 @@ def semantic_similarity(a, b):
         max_len = 2000
         a_trunc = a[:max_len]
         b_trunc = b[:max_len]
-        response = openai.embeddings.create(
-            input=[a_trunc, b_trunc],
-            model="text-embedding-3-small"
-        )
-        if not hasattr(response, 'data') or len(response.data) < 2:
-            print(f"Semantic similarity error: Unexpected response format: {response}")
-            return 0.0
-        emb_a = response.data[0].embedding
-        emb_b = response.data[1].embedding
+        
+        # Try new OpenAI API format first
+        if hasattr(openai, 'embeddings'):
+            response = openai.embeddings.create(
+                input=[a_trunc, b_trunc],
+                model="text-embedding-3-small"
+            )
+            if not hasattr(response, 'data') or len(response.data) < 2:
+                print(f"Semantic similarity error: Unexpected response format: {response}")
+                return 0.0
+            emb_a = response.data[0].embedding
+            emb_b = response.data[1].embedding
+        else:
+            # Fallback to older OpenAI API format
+            response = openai.Embedding.create(
+                input=[a_trunc, b_trunc],
+                model="text-embedding-ada-002"
+            )
+            if not response.get('data') or len(response['data']) < 2:
+                print(f"Semantic similarity error: Unexpected response format: {response}")
+                return 0.0
+            emb_a = response['data'][0]['embedding']
+            emb_b = response['data'][1]['embedding']
+            
         return cosine_similarity(emb_a, emb_b)
     except Exception as e:
         print(f"Semantic similarity error: {e} (a_len={len(a)}, b_len={len(b)})")
